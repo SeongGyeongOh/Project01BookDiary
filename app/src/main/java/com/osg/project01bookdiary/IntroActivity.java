@@ -23,17 +23,11 @@ public class IntroActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if(LoginActivity.account!=null){
-                Intent intent = new Intent(IntroActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
 
-            }else{
-                Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
+                Intent intent = new Intent(IntroActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
 
-        }
     };
 }

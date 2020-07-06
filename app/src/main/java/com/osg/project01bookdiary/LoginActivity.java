@@ -2,6 +2,7 @@ package com.osg.project01bookdiary;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -28,9 +29,6 @@ import static com.kakao.util.helper.Utility.getPackageInfo;
 
 
 public class LoginActivity extends AppCompatActivity {
-
-    public static UserAccount account;
-    public static Profile profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +62,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onSessionClosed(ErrorResult errorResult) {         }
             @Override
             public void onSuccess(MeV2Response result) {
-                account = result.getKakaoAccount();
+                UserAccount account = result.getKakaoAccount();
                 if(account==null) return;
-                profile = account.getProfile();
+                Profile profile = account.getProfile();
                 String nickName = profile.getNickname();
                 String profileUrl = profile.getProfileImageUrl();
 
