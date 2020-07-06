@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="My Page"
+        android:id="@+id/mypage"
+        android:icon="@drawable/ic_baseline_home_24"/>
+
+    <item android:title="Search"
+        android:id="@+id/search"
+        android:icon="@drawable/ic_baseline_import_contacts_24"/>
+
+    <item android:title="Shared Review"
+        android:id="@+id/shared"
+        android:icon="@drawable/ic_baseline_dashboard_24"/>
+
+    <item android:title="Calendar"
+        android:id="@+id/calendar"
+        android:icon="@drawable/ic_baseline_calendar_today_24"/>
+
+    <item android:title="Settings"
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_baseline_settings_24"/>
+
+
+
+</menu>
