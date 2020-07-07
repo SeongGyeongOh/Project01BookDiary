@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardview"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        android:elevation="4dp">
+        <ImageView
+            android:id="@+id/iv_bookcover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/sample"/>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_booktitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="책 제목"
+        android:textColor="#ff000000"
+        android:textStyle="bold"
+        android:layout_toRightOf="@id/cardview"
+        android:layout_margin="16dp"/>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/tv_booktitle"
+        android:layout_toRightOf="@id/cardview"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="여기는 리뷰 내용칸임"
+        android:textColor="#ff000000"
+        android:maxLines="5"/>
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2020-06-22"
+        android:textSize="12sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"/>
+
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:text="공유"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:background="@drawable/bg_button"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="16dp"/>
+
+</RelativeLayout>

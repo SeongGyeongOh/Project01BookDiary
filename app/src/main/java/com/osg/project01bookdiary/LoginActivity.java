@@ -1,5 +1,6 @@
 package com.osg.project01bookdiary;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.accounts.Account;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
+import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
@@ -52,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
-            Log.i("KAKAO", "로그인 실패");
+            Log.e("KAKAO", "로그인 실패", exception);
         }
     };
 
@@ -97,5 +99,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Session.getCurrentSession().removeCallback(iSessionCallback);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)){
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
