@@ -93,17 +93,6 @@ public class Fragment02SearchBook extends Fragment {
             }
         });
 
-
-
-
-
-
-
-
-
-
-
-
         return view;
     }
 }

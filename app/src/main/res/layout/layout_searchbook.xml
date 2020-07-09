@@ -16,7 +16,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical"
         android:layout_below="@id/searchview"
-        android:layout_marginTop="8dp"
-        android:background="#88449EAA"/>
+        android:background="#88449EAA"
+        android:padding="4dp"/>
 
 </RelativeLayout>

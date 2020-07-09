@@ -7,7 +7,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class RetrofitHelper {
     public static Retrofit getString(){
         Retrofit.Builder builder = new Retrofit.Builder();
-        builder.baseUrl("https://dapi.kakao.com");
+        builder.baseUrl("http://kamniang.dothome.co.kr");
         builder.addConverterFactory(ScalarsConverterFactory.create());
 
         return builder.build();

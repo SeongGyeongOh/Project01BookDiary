@@ -4,17 +4,17 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
-    app:cardCornerRadius="10dp"
+    app:cardCornerRadius="5dp"
     android:elevation="8dp"
     android:layout_marginBottom="8dp"
-    android:background="#ffffff">
+    android:backgroundTint="#F3F3F3">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/ivTitle"
-            android:layout_width="80dp"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_centerVertical="true"
@@ -37,11 +37,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
-            android:text="작가 이름"
+            android:text=""
             android:textColor="#000000"
             android:textSize="12sp"
             android:layout_toRightOf="@id/ivTitle"
             android:layout_margin="16dp"/>
+
+            <ImageButton
+                android:id="@+id/img_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_baseline_more_vert_24"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@id/ivTitle" />
     </RelativeLayout>
 
 
