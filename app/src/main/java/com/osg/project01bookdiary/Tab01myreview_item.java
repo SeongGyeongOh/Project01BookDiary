@@ -2,15 +2,19 @@ package com.osg.project01bookdiary;
 
 public class Tab01myreview_item {
 
-    String img;
+    int no;
+    String image;
     String bookTitle;
-    String content;
-    String date;
+    String bookAuthor;
+    String reviewTitle;
+    String reviewContent;
 
-    public Tab01myreview_item(String img, String bookTitle, String content, String date) {
-        this.img = img;
+    public Tab01myreview_item(int no, String image, String bookTitle, String bookAuthor, String reviewTitle, String reviewContent) {
+        this.no = no;
+        this.image = image;
         this.bookTitle = bookTitle;
-        this.content = content;
-        this.date = date;
+        this.bookAuthor = bookAuthor;
+        this.reviewTitle = reviewTitle;
+        this.reviewContent = reviewContent;
     }
 }

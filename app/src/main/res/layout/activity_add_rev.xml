@@ -45,6 +45,7 @@
     </RelativeLayout>
 
     <EditText
+        android:id="@+id/et_revTitle"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:hint="제목을 입력하세요"
@@ -54,6 +55,7 @@
         android:maxLines="1"/>
 
     <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/et_revContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
@@ -61,7 +63,6 @@
         android:background="@drawable/bg_revedit"
         android:gravity="top"
         android:hint="리뷰를 입력하세요"
-        android:maxLines="1"
         android:padding="8dp"
         android:textSize="14sp" />
 

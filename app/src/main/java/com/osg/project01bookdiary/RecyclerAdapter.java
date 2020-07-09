@@ -39,11 +39,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
         VH viewHolder = (VH)holder;
         Tab01myreview_item item =items.get(position);
 
-        //*********** 이미지 추가할 것**************************
-//        viewHolder.cover.setImageResource(item.img);
+        if(item.image.isEmpty()){
+            viewHolder.cover.setImageResource(R.drawable.noimage);
+        }else{
+            Glide.with(context).load(item.image).into(viewHolder.cover);
+        }
+
         viewHolder.title.setText(item.bookTitle);
-        viewHolder.content.setText(item.content);
-        viewHolder.date.setText(item.date);
+        viewHolder.revTitle.setText(item.reviewTitle);
+        viewHolder.revContent.setText(item.reviewContent);
+//        viewHolder.date.setText(item.);
     }
 
     @Override
@@ -54,16 +59,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
     public class VH extends RecyclerView.ViewHolder{
         ImageView cover;
         TextView title;
-        TextView content;
+        TextView revTitle;
+        TextView revContent;
         TextView date;
         Button btn;
 
         public VH(@NonNull View itemView) {
             super(itemView);
-            cover = itemView.findViewById(R.id.iv_bookcover);
-            title = itemView.findViewById(R.id.tv_booktitle);
-            content = itemView.findViewById(R.id.tv_content);
-            date = itemView.findViewById(R.id.tv_date);
+            cover = itemView.findViewById(R.id.bookCover);
+            title = itemView.findViewById(R.id.book_title);
+            revTitle =itemView.findViewById(R.id.rev_title);
+            revContent = itemView.findViewById(R.id.rev_content);
+//            date = itemView.findViewById(R.id.tv_date);
             btn = itemView.findViewById(R.id.btn);
 
         }

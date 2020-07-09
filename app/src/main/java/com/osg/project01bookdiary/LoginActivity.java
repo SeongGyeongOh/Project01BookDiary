@@ -48,11 +48,17 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        String keyHash = getKeyHash(this);
-        Log.i("TAG", keyHash);
+//        String keyHash = getKeyHash(this);
+//        Log.i("TAG", keyHash);
 
-        Session.getCurrentSession().addCallback(iSessionCallback);
 
+        if(Session.getCurrentSession().checkAndImplicitOpen()){
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else {
+            Session.getCurrentSession().addCallback(iSessionCallback);
+        }
         requestUserInfo();
     }
 
@@ -82,7 +88,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(MeV2Response result) {
                 long id = result.getId();
-                Log.i("ID", id+"");
+//                Log.i("ID", id+"");
+
                 UserAccount account = result.getKakaoAccount();
                 if(account==null) return;
 
@@ -92,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Retrofit retrofit = RetrofitHelper.getString();
                 RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-                Call<String> call = retrofitService.getLoginData(id+"");
+                Call<String> call = retrofitService.getLoginData("table"+id);
 
                 call.enqueue(new Callback<String>() {
                     @Override
@@ -143,19 +150,4 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
-
-
-    //        Retrofit retrofit = RetrofitHelper.getString();
-    //        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-    //        Call<String> call = retrofitService.postLoginData("성경");
-    //
-    //        call.enqueue(new Callback<String>() {
-    //            @Override
-    //            public void onResponse(Call<String> call, Response<String> response) {
-    //            }
-    //
-    //            @Override
-    //            public void onFailure(Call<String> call, Throwable t) {}
-    //        });
 }
