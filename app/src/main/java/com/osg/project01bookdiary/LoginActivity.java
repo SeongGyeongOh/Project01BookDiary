@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -50,16 +51,22 @@ public class LoginActivity extends AppCompatActivity {
 
 //        String keyHash = getKeyHash(this);
 //        Log.i("TAG", keyHash);
-
-
         if(Session.getCurrentSession().checkAndImplicitOpen()){
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+
+            if (G.profileName!=null) {
+                Intent intent = new Intent(this, MainActivity.class );
+                startActivity(intent);
+                finish();
+
+            }else {
+                requestUserInfo();
+            }
+
         }else {
             Session.getCurrentSession().addCallback(iSessionCallback);
         }
-        requestUserInfo();
+
+
     }
 
     private ISessionCallback iSessionCallback = new ISessionCallback() {
@@ -67,9 +74,11 @@ public class LoginActivity extends AppCompatActivity {
         public void onSessionOpened() {
             Log.i("KAKAO", "로그인 성공");
 
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            requestUserInfo();
+
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//            startActivity(intent);
+//            finish();
         }
 
 
@@ -89,23 +98,36 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(MeV2Response result) {
                 long id = result.getId();
 //                Log.i("ID", id+"");
+                G.nickName = "table"+id;
 
                 UserAccount account = result.getKakaoAccount();
                 if(account==null) return;
 
                 Profile profile = account.getProfile();
-                String nickName = profile.getNickname();
-                String profileUrl = profile.getProfileImageUrl();
+                G.profileName = profile.getNickname();
+                G.profileUrl = profile.getProfileImageUrl();
+
+                SharedPreferences sharedPreferences = getSharedPreferences("Profile", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                editor.putString("Profile Name", G.profileName);
+                editor.putString("Profile Image", G.profileUrl);
+
+                editor.commit();
 
                 Retrofit retrofit = RetrofitHelper.getString();
                 RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-                Call<String> call = retrofitService.getLoginData("table"+id);
+                Call<String> call = retrofitService.getLoginData(G.nickName);
 
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         if(response.isSuccessful()){
                             Toast.makeText(LoginActivity.this, response.body()+"", Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
                     }
 

@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -107,7 +108,8 @@ public class RecyclerSearchBookAdapter extends RecyclerView.Adapter {
                                     break;
 
                                 case "내 도서 목록 추가":
-                                  //Fragment로 이동 또는 토스트로 띄우기
+                                    //다이아로그를 띄우 책 선택 여부/별점 매기기
+
                                     break;
                             }
                             return true;

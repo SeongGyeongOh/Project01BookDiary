@@ -76,7 +76,7 @@ public class AddRevActivity extends AppCompatActivity {
         //데이터 서버에 보내기
         Retrofit retrofit = RetrofitHelper.getString();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-        Call<String> call = retrofitService.postReviewData(img, bookTitle, bookAuthor, revTitle, revContent);
+        Call<String> call = retrofitService.postReviewData(G.nickName, img, bookTitle, bookAuthor, revTitle, revContent);
 
         call.enqueue(new Callback<String>() {
             @Override

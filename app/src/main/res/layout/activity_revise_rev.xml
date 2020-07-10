@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".ReviseRevActivity">
+
+    <ImageView
+        android:id="@+id/coveriv"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/sample"/>
+
+    <TextView
+        android:id="@+id/titletv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/coveriv"
+        android:text="제목칸"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ff000000"
+        android:textSize="18sp"/>
+
+
+    <TextView
+        android:id="@+id/authortv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="4dp"
+        android:layout_below="@id/titletv"
+        android:text="작가"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:id="@+id/reviewTitleet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/authortv"
+        android:background="@drawable/bg_tv"
+        android:padding="10dp"
+        android:text="리뷰 제목 블라블라"
+        android:textSize="14sp"
+        android:textColor="#ff000000" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/reviewTitleet"
+        android:layout_marginTop="20dp"
+        app:cardElevation="20dp"
+        app:cardCornerRadius="8dp">
+        <EditText
+            android:id="@+id/reviewet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/authortv"
+            android:text="리뷰 블라블라블라"
+            android:textSize="14sp"
+            android:padding="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="top"
+            android:textColor="#ff000000"
+            android:background="@drawable/bg_tv"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="수정"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:onClick="clickRev"/>
+        </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+</RelativeLayout>

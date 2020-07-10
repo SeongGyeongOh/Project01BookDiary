@@ -41,9 +41,27 @@ public class Tab01MyReviewFragment extends Fragment {
         recyclerView.setAdapter(myAdapter);
 
 
+
+
+//        btn = view.findViewById(R.id.btn);
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
+
+        return view;
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         Retrofit retrofit = RetrofitHelper.getJsonFromDB();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-        Call<ArrayList<Tab01myreview_item>> call = retrofitService.getReviewDataJson();
+        Call<ArrayList<Tab01myreview_item>> call = retrofitService.getReviewDataJson(G.nickName);
 
         call.enqueue(new Callback<ArrayList<Tab01myreview_item>>() {
             @Override
@@ -53,6 +71,7 @@ public class Tab01MyReviewFragment extends Fragment {
 
                     items.clear();
                     myAdapter.notifyDataSetChanged();
+                    Toast.makeText(getActivity(), "MainActivity 시작", Toast.LENGTH_SHORT).show();
 
                     for(Tab01myreview_item item: reviews){
                         items.add(0, item);
@@ -68,17 +87,6 @@ public class Tab01MyReviewFragment extends Fragment {
 
             }
         });
-
-
-//        btn = view.findViewById(R.id.btn);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
-
-        return view;
 
     }
 }

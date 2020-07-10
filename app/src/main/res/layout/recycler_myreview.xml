@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/click_recycler"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="8dp">
 
@@ -20,7 +22,10 @@
         android:textColor="#ff000000"
         android:textStyle="bold"
         android:layout_toRightOf="@id/bookCover"
-        android:layout_margin="16dp"/>
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:maxLines="1"
+        android:layout_alignTop="@id/bookCover"/>
 
     <TextView
         android:id="@+id/rev_title"
@@ -47,6 +52,16 @@
         android:textColor="#ff000000"
         android:maxLines="2"/>
 
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="작성일자칸"
+        android:textSize="12sp"
+        android:layout_below="@id/btnDel"
+        android:layout_alignParentRight="true"/>
+
+
 <!--    <TextView-->
 <!--        android:id="@+id/tv_date"-->
 <!--        android:layout_width="wrap_content"-->
@@ -68,5 +83,19 @@
         android:background="@drawable/bg_button"
         android:layout_alignParentRight="true"
         android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/btnDel"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:text="삭제"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:background="@drawable/bg_button"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_below="@id/btn"/>
 
 </RelativeLayout>

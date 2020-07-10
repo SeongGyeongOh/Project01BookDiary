@@ -3,7 +3,7 @@
     package="com.osg.project01bookdiary">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MyApplication"
@@ -15,8 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".AddRevActivity"></activity>
+        <activity android:name=".ReviseRevActivity"></activity>
+        <activity android:name=".MyDetailedReviewActivity" />
+        <activity android:name=".AddRevActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".IntroActivity">
             <intent-filter>
@@ -26,11 +27,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <meta-data

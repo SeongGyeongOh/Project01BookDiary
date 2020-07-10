@@ -1,5 +1,6 @@
 package com.osg.project01bookdiary;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ public class Fragment05Settings extends Fragment {
                     @Override
                     public void onCompleteLogout() {
                         Toast.makeText(getActivity(), "로그아웃", Toast.LENGTH_SHORT).show();
+                        G.profileName = null;
                     }
                 });
             }

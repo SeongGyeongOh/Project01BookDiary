@@ -25,9 +25,21 @@ public interface RetrofitService {
 
     @FormUrlEncoded
     @POST("/Project01BookDiary/insertDataToDB.php")
-    Call<String> postReviewData(@Field("image") String image, @Field("bookTitle") String title, @Field("bookAuthor") String author, @Field("reviewTitle") String revTitle, @Field("reviewContent") String revContent);
+    Call<String> postReviewData(@Field("nickName") String nickName,
+                                @Field("image") String image,
+                                @Field("bookTitle") String title,
+                                @Field("bookAuthor") String author,
+                                @Field("reviewTitle") String revTitle,
+                                @Field("reviewContent") String revContent);
 
     @GET("/Project01BookDiary/getDataFromDB.php")
-    Call<ArrayList<Tab01myreview_item>> getReviewDataJson();
+    Call<ArrayList<Tab01myreview_item>> getReviewDataJson(@Query("nickName") String nickName);
+
+    @FormUrlEncoded
+    @POST("/Project01BookDiary/updateDataContent.php")
+    Call<String> updateDBdate(@Field("nickName") String nickName,
+                              @Field("reviewTitle") String title,
+                              @Field("reviewContent") String content,
+                              @Field("bookTitle") String bookTitle);
 
 }
