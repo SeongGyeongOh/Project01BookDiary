@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/profileIV"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginRight="8dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/sample"/>
+
+    <TextView
+        android:id="@+id/profileTV"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileIV"
+        android:gravity="center"
+        android:layout_marginTop="0dp"
+        android:maxLines="1"
+        android:text="프로필 이름" />
+
+    <TextView
+        android:id="@+id/bookTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/profileIV"
+        android:text="책 제목"
+        android:textStyle="bold"
+        android:textColor="#ff000000"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/revtitleTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/profileIV"
+        android:layout_below="@id/bookTV"
+        android:text="리뷰 제목"
+        android:layout_marginTop="16dp"/>
+
+
+
+
+</RelativeLayout>

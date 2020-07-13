@@ -41,8 +41,6 @@ public class Tab01MyReviewFragment extends Fragment {
         recyclerView.setAdapter(myAdapter);
 
 
-
-
 //        btn = view.findViewById(R.id.btn);
 //        btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -52,7 +50,6 @@ public class Tab01MyReviewFragment extends Fragment {
 //        });
 
         return view;
-
     }
 
     @Override
@@ -71,14 +68,13 @@ public class Tab01MyReviewFragment extends Fragment {
 
                     items.clear();
                     myAdapter.notifyDataSetChanged();
-                    Toast.makeText(getActivity(), "MainActivity 시작", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "MainActivity 시작", Toast.LENGTH_SHORT).show();
 
                     for(Tab01myreview_item item: reviews){
                         items.add(0, item);
 
                         myAdapter.notifyItemInserted(0);
                     }
-
                 }
             }
 
@@ -90,3 +86,4 @@ public class Tab01MyReviewFragment extends Fragment {
 
     }
 }
+

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.osg.project01bookdiary_settings.Fragment05Settings;
+import com.osg.project01bookdiary_sharedreview.Fragment03SharedReview;
 
 public class MainActivity extends AppCompatActivity {
 

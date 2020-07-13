@@ -3,6 +3,9 @@ package com.osg.project01bookdiary;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +13,29 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
+//Tab01MyReviewFragment 아답터
 public class RecyclerAdapter extends RecyclerView.Adapter {
 
     ArrayList<Tab01myreview_item> items;
@@ -77,10 +94,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
             revTitle =itemView.findViewById(R.id.rev_title);
             revContent = itemView.findViewById(R.id.rev_content);
             date = itemView.findViewById(R.id.tv_date);
-            btnDel=itemView.findViewById(R.id.btnDel);
-
-//            date = itemView.findViewById(R.id.tv_date);
             btn = itemView.findViewById(R.id.btn);
+            btnDel=itemView.findViewById(R.id.btnDel);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,6 +110,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
                 }
             });
 
+            //공유 버튼
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickBtn();
+                }
+            });
+
+            //삭제 버튼
             btnDel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -119,5 +143,63 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
             });
 
         }
+
+        void onClickBtn(){
+            new AlertDialog.Builder(context).setMessage("공유 하시겠습니까?").setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    Uri imgUri = Uri.parse(G.profileUrl);
+                    SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMddhhmmss");
+                    String profileImgName =sdf.format(new Date())+".jpg";
+
+                    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                    StorageReference ref = firebaseStorage.getReference("prorileImage/"+profileImgName);
+
+                    UploadTask task = ref.putFile(imgUri);
+                    task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(context, "업로드 성공", Toast.LENGTH_SHORT).show();
+                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    G.profileUrl = uri.toString();
+                                }
+                            });
+                        }
+                    });
+
+                    //데이터들 얻어와서 SharedReview Table로 전송
+                    String profileImage = G.profileUrl;
+                    String profileName = G.profileName;
+                    String bookCover = items.get(getLayoutPosition()).image;
+                    String bookTitle = items.get(getLayoutPosition()).bookTitle;
+                    String bookAuthor = items.get(getLayoutPosition()).bookAuthor;
+                    String reviewTitle = items.get(getLayoutPosition()).reviewTitle;
+                    String reviewContent = items.get(getLayoutPosition()).reviewContent;
+
+                    SharedItem sharedItem = new SharedItem(profileImage, profileName, bookCover, bookTitle, bookAuthor, reviewTitle, reviewContent);
+                    Retrofit retrofit = RetrofitHelper.getJsonFromDB();
+                    RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+                    Call<String> call = retrofitService.updateSharedReview(sharedItem);
+
+                    call.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) { }
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {}
+                    });
+                    Toast.makeText(context, "공유됐습니다", Toast.LENGTH_SHORT).show();
+                }
+            }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    return;
+                }
+            }).show();
+        }
+
     }
+
 }

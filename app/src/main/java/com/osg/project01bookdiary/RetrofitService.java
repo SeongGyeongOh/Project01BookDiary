@@ -1,17 +1,16 @@
 package com.osg.project01bookdiary;
 
+import com.osg.project01bookdiary_sharedreview.SharedReview_item;
+
 import java.util.ArrayList;
 
-import okhttp3.MultipartBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface RetrofitService {
@@ -42,4 +41,11 @@ public interface RetrofitService {
                               @Field("reviewContent") String content,
                               @Field("bookTitle") String bookTitle);
 
+    //공유 버튼 눌렀을 때 데이터를 SharedReview 데이터베이스 테이블로 전송
+    @POST("/Project01BookDiary/updateSharedReview.php")
+    Call<String> updateSharedReview(@Body SharedItem item);
+
+    //Fragment03SharedReview가 DB에서 읽어옴
+    @GET("/Project01BookDiary/loadSharedReview.php")
+    Call<ArrayList<SharedReview_item>> loadSharedData();
 }
