@@ -125,9 +125,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage("삭제하시겠습니까?");
                     builder.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            int num = items.get(getLayoutPosition()).no;
+                            String tableName = G.nickName;
 
+                            Retrofit retrofit = RetrofitHelper.getString();
+                            RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+                            Call<String> call = retrofitService.deleteDataFromDB(tableName, num);
+                            call.enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    if(response.isSuccessful()){
+                                        Toast.makeText(context, response.body()+"", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {}
+                            });
                         }
                     });
 
@@ -149,28 +166,29 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 
-                    Uri imgUri = Uri.parse(G.profileUrl);
-                    SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMddhhmmss");
-                    String profileImgName =sdf.format(new Date())+".jpg";
-
-                    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-                    StorageReference ref = firebaseStorage.getReference("prorileImage/"+profileImgName);
-
-                    UploadTask task = ref.putFile(imgUri);
-                    task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(context, "업로드 성공", Toast.LENGTH_SHORT).show();
-                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    G.profileUrl = uri.toString();
-                                }
-                            });
-                        }
-                    });
+//                    Uri imgUri = Uri.parse(G.profileUrl);
+//                    SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMddhhmmss");
+//                    String profileImgName =sdf.format(new Date())+".jpg";
+//
+//                    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+//                    StorageReference ref = firebaseStorage.getReference("prorileImage/"+profileImgName);
+//
+//                    UploadTask task = ref.putFile(imgUri);
+//                    task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                            Toast.makeText(context, "업로드 성공", Toast.LENGTH_SHORT).show();
+//                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                                @Override
+//                                public void onSuccess(Uri uri) {
+//                                    G.profileUrl = uri.toString();
+//                                }
+//                            });
+//                        }
+//                    });
 
                     //데이터들 얻어와서 SharedReview Table로 전송
+                    String ID = G.nickName;
                     String profileImage = G.profileUrl;
                     String profileName = G.profileName;
                     String bookCover = items.get(getLayoutPosition()).image;
@@ -179,7 +197,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
                     String reviewTitle = items.get(getLayoutPosition()).reviewTitle;
                     String reviewContent = items.get(getLayoutPosition()).reviewContent;
 
-                    SharedItem sharedItem = new SharedItem(profileImage, profileName, bookCover, bookTitle, bookAuthor, reviewTitle, reviewContent);
+                    SharedItem sharedItem = new SharedItem(ID, profileImage, profileName, bookCover, bookTitle, bookAuthor, reviewTitle, reviewContent);
                     Retrofit retrofit = RetrofitHelper.getJsonFromDB();
                     RetrofitService retrofitService = retrofit.create(RetrofitService.class);
                     Call<String> call = retrofitService.updateSharedReview(sharedItem);

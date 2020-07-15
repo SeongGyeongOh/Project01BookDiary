@@ -5,14 +5,23 @@
     android:background="#55eeeeee"
     android:id="@+id/settings_layout">
 
-    <ImageView
+    <TextView
+        android:id="@+id/tv_fragtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="설정"
+        android:fontFamily="@font/godo"
+        android:padding="4dp"
+        android:textColor="#000000"
+        android:textSize="20sp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_profile"
         android:layout_width="130dp"
-        android:layout_height="wrap_content"
+        android:layout_height="130dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="120dp"
-        android:src="@drawable/ic_baseline_account_circle_24"
-        android:adjustViewBounds="true" />
+        android:src="@drawable/ic_baseline_account_circle_24" />
 
     <TextView
         android:id="@+id/tv_nickname"

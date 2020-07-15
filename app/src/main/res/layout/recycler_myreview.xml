@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/book_title"
-        android:layout_width="match_parent"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:text="책 제목"
         android:textColor="#ff000000"
@@ -24,12 +24,13 @@
         android:layout_toRightOf="@id/bookCover"
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="8dp"
-        android:maxLines="1"
-        android:layout_alignTop="@id/bookCover"/>
+        android:ellipsize="end"
+        android:layout_alignTop="@id/bookCover"
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/rev_title"
-        android:layout_width="match_parent"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/book_title"
         android:layout_toRightOf="@id/bookCover"
@@ -37,11 +38,11 @@
         android:layout_marginRight="16dp"
         android:text="여기는 리뷰 제목칸"
         android:textColor="#ff000000"
-        android:maxLines="5"/>
+        android:maxLines="2"/>
 
     <TextView
         android:id="@+id/rev_content"
-        android:layout_width="match_parent"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/rev_title"
         android:layout_toRightOf="@id/bookCover"
@@ -59,7 +60,8 @@
         android:text="작성일자칸"
         android:textSize="12sp"
         android:layout_below="@id/btnDel"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"/>
 
 
 <!--    <TextView-->
@@ -74,27 +76,27 @@
 
     <Button
         android:id="@+id/btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:text="공유"
-        android:textSize="11sp"
+        android:textSize="10sp"
         android:textStyle="bold"
         android:textColor="#ffffff"
         android:background="@drawable/bg_button"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="16dp"/>
+        android:layout_alignTop="@id/book_title"/>
 
     <Button
         android:id="@+id/btnDel"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:text="삭제"
-        android:textSize="11sp"
+        android:textSize="10sp"
         android:textStyle="bold"
         android:textColor="#ffffff"
         android:background="@drawable/bg_button"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="4dp"
         android:layout_below="@id/btn"/>
 

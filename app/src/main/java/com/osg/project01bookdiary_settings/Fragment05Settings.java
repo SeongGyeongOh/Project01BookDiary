@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +26,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -37,16 +42,26 @@ import com.osg.project01bookdiary.G;
 import com.osg.project01bookdiary.LoginActivity;
 import com.osg.project01bookdiary.MainActivity;
 import com.osg.project01bookdiary.R;
+import com.osg.project01bookdiary.RetrofitHelper;
+import com.osg.project01bookdiary.RetrofitService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.http.Url;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Fragment05Settings extends Fragment {
 
-    ImageView profileImg;
+    CircleImageView profileImg;
     TextView profileName, accountMan;
     Button btnChangeProf, btnLogout;
 
@@ -56,56 +71,42 @@ public class Fragment05Settings extends Fragment {
     Uri img;
     TextView linktoGP;
 
+    Uri imgUrl;
+
+    boolean imgIsChanged, nameIsChanged;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_settings, container, false);
 
+        //퍼미션 추가
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N){
+            if(getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 10);
+            }
+        }
+
+
         profileImg = view.findViewById(R.id.iv_profile);
         profileName = view.findViewById(R.id.tv_nickname);
         settingsLayout = view.findViewById(R.id.settings_layout);
 
+        loadProfileData();
+
         Glide.with(getActivity()).load(G.profileUrl).into(profileImg);
         profileName.setText(G.profileName);
-
-        //로그아웃 버튼
-        btnLogout= view.findViewById(R.id.btn_logout);
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
-                    @Override
-                    public void onCompleteLogout() {
-//                        Toast.makeText(getActivity(), "로그아웃", Toast.LENGTH_SHORT).show();
-                        G.profileName = null;
-                    }
-                });
-                redirectLoginActivity();
-            }
-        });
 
         //프로필 변경 버튼
         btnChangeProf = view.findViewById(R.id.btn_changeProfile);
         btnChangeProf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //퍼미션 추가
-                if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N){
-                    if(getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 10);
-                    }
-                }
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                LayoutInflater inflater = getLayoutInflater();
                 View v = getLayoutInflater().inflate(R.layout.alertdialog_settings, null );
-
                 iv = v.findViewById(R.id.iv_clicktochangeimg);
                 EditText et = v.findViewById(R.id.et_nickname);
-//                Button btn = v.findViewById(R.id.btn_changeProfile);
-
                 setProfileImg();
 
                 builder.setView(v);
@@ -113,21 +114,77 @@ public class Fragment05Settings extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(img!=null){
-
                             G.profileUrl=img.toString();
                             Glide.with(getContext()).load(img).into(profileImg);
+                            //imgIsChanged = true;
 
-//                            saveProfileData();
+                            //1. 사진을 Firebase Storage에 전송
+                            imgUrl = Uri.parse(G.profileUrl);
+
+                            saveProfileData();
+
+                            //프로필 이미지 SharedPreferences에 저장하기
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("Profile Image", G.profileUrl);
+
+                            editor.commit();
                         }
-                        if(et!=null){
-                            profileName.setText(et.getText().toString());
-                            G.profileName=profileName.getText().toString();
+
+                        if(et.getText()!=null){
+                            G.profileName=et.getText().toString();
+                            profileName.setText(G.profileName);
+
+                            Retrofit retrofit = RetrofitHelper.getString();
+                            RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+                            Call<String> call = retrofitService.updateProfileName(G.nickName, G.profileName);
+                            call.enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+
+                                }
+                            });
+
+                            //TODO LIST:댓글에 나타나는 프로필 이름은 실시간 DB에 가서 바꿔야함
+//                            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//                            DatabaseReference dbRef = firebaseDatabase.getReference();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("Profile Name", G.profileName);
+
+                            editor.commit();
+
+                        }else{
+                            return;
                         }
                     }
                 });
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
+
+            }
+        });
+
+        //로그아웃 버튼
+        btnLogout= view.findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                G.profileName = null;
+                Log.i("LOGOUT", "로그아웃 성공");
+                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+                    @Override
+                    public void onCompleteLogout() {
+                    }
+                });
+                redirectLoginActivity();
             }
         });
 
@@ -136,6 +193,7 @@ public class Fragment05Settings extends Fragment {
 
 
     void redirectLoginActivity(){
+        //로그아웃시 로그인 액티비티로 이동
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
         getActivity().finish();
@@ -149,6 +207,7 @@ public class Fragment05Settings extends Fragment {
         }
     }
 
+    //사진 폴더로 가는 인텐트 실행
     void setProfileImg(){
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,49 +219,64 @@ public class Fragment05Settings extends Fragment {
         });
     }
 
+    //사진 가지고 오는 Activity의 결과
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if(requestCode==100 && resultCode==RESULT_OK){
             img = data.getData();
-            Glide.with(getContext()).load(img).into(iv);
+            if(img!=null){
+                Glide.with(getContext()).load(img).into(iv);
+            }
         }
     }
 
-//    void saveProfileData(){
-//
-//        Uri imgUrl = Uri.parse(G.profileUrl);
-//
-//        //프로필 이미지 Firebase에 저장하기
-//        SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMddhhmmss");
-//        String profileImgName =sdf.format(new Date())+".png";
-//        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-//        StorageReference ref = firebaseStorage.getReference("prorileImage/"+profileImgName);
-//
-//        UploadTask task = ref.putFile(imgUrl);
-//        task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                Toast.makeText(getContext(), "업로드 성공", Toast.LENGTH_SHORT).show();
-//
-//                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
-//                        G.profileUrl = uri.toString();
-//                    }
-//                });
-//            }
-//        });
-//
-//        //프로필 이미지와 닉네임 SharedPreferences로 저장하기
-//        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//
-//        editor.putString("Profile Name", G.profileName);
-//        editor.putString("Profile Image", G.profileUrl);
-//
-//        editor.commit();
-//    }
+    public void saveProfileData(){
+        //프로필 이미지 Firebase에 저장하기
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        String profileImgName ="Image"+G.nickName+".png";
+
+        StorageReference ref = firebaseStorage.getReference("profileImage/"+profileImgName);
+
+        UploadTask task = ref.putFile(imgUrl);
+        task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(getContext(), "업로드 성공", Toast.LENGTH_SHORT).show();
+
+                StorageReference imgRef = firebaseStorage.getReference();
+                imgRef.child("profileImage/"+"Image"+G.nickName+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        G.profileUrl = uri.toString();
+                        String uriString = G.profileUrl;
+                        Toast.makeText(getContext(), G.profileUrl+"", Toast.LENGTH_SHORT).show();
+
+                        //2. 전송한 사진의 Firebase 주소값을 얻어와 DB에 반영
+                        Retrofit retrofit = RetrofitHelper.getString();
+                        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+                        Call<String> call = retrofitService.updateProfileImage(G.nickName, uriString);
+                        call.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                Toast.makeText(getContext(), t.getMessage()+"", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    void loadProfileData(){
+        SharedPreferences sharedPreferences =getContext().getSharedPreferences("Profile", MODE_PRIVATE);
+        G.profileUrl = sharedPreferences.getString("Profile Image", null);
+        G.profileName = sharedPreferences.getString("Profile Name", null);
+    }
 
 }

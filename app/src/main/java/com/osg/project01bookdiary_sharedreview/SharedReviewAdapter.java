@@ -1,10 +1,10 @@
 package com.osg.project01bookdiary_sharedreview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.osg.project01bookdiary.R;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SharedReviewAdapter extends RecyclerView.Adapter {
 
@@ -50,7 +52,7 @@ public class SharedReviewAdapter extends RecyclerView.Adapter {
     }
 
     class VH extends RecyclerView.ViewHolder{
-        ImageView ivProfile;
+        CircleImageView ivProfile;
         TextView tvProfile, tvBookTitle, tvReviewTitle;
 
         public VH(@NonNull View itemView) {
@@ -60,6 +62,23 @@ public class SharedReviewAdapter extends RecyclerView.Adapter {
             tvProfile = itemView.findViewById(R.id.profileTV);
             tvBookTitle = itemView.findViewById(R.id.bookTV);
             tvReviewTitle = itemView.findViewById(R.id.revtitleTV);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, DetailedSharedReviewActivity.class);
+                    intent.putExtra("bookCover", items.get(getLayoutPosition()).bookCover);
+                    intent.putExtra("bookTitle", items.get(getLayoutPosition()).bookTitle);
+                    intent.putExtra("bookAuthor", items.get(getLayoutPosition()).bookAuthor);
+
+                    intent.putExtra("profileImg", items.get(getLayoutPosition()).profileImage);
+                    intent.putExtra("profileName", items.get(getLayoutPosition()).profileName);
+
+                    intent.putExtra("review", items.get(getLayoutPosition()).reviewTitle +"\n\n"+items.get(getLayoutPosition()).reviewContent);
+                    intent.putExtra("no", items.get(getLayoutPosition()).no);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

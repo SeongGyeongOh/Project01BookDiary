@@ -1,5 +1,6 @@
 package com.osg.project01bookdiary;
 
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.osg.project01bookdiary_sharedreview.SharedReview_item;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface RetrofitService {
@@ -48,4 +50,22 @@ public interface RetrofitService {
     //Fragment03SharedReview가 DB에서 읽어옴
     @GET("/Project01BookDiary/loadSharedReview.php")
     Call<ArrayList<SharedReview_item>> loadSharedData();
+
+    //삭제 버튼 눌러 table+Nickname의 정보 삭제
+    @FormUrlEncoded
+    @POST("/Project01BookDiary/deleteDataFromDB.php")
+    Call<String> deleteDataFromDB(@Field("tableName") String tableName, @Field("no") int no);
+
+    //설정에서 프로필 이미지 변경 시 해당 내용 반영
+    @FormUrlEncoded
+    @POST("/Project01BookDiary/updateProfileImageTest.php")
+    Call<String> updateProfileImage(@Field("ID") String ID,
+                                    @Field("profileImage") String profileImage);
+
+    //설정에서 프로필 이름 변경 시 해당 내용 반영
+    @FormUrlEncoded
+    @POST("/Project01BookDiary/uptdateProfileNameToData.php")
+    Call<String> updateProfileName(@Field("ID") String ID,
+                                   @Field("profileName") String profileName);
+
 }

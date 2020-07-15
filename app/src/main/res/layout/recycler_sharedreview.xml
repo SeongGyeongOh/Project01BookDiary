@@ -4,41 +4,52 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <ImageView
-        android:id="@+id/profileIV"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginRight="8dp"
-        android:adjustViewBounds="true"
-        android:src="@drawable/sample"/>
-
-    <TextView
-        android:id="@+id/profileTV"
-        android:layout_width="80dp"
+    <RelativeLayout
+        android:id="@+id/linear"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profileIV"
-        android:gravity="center"
-        android:layout_marginTop="0dp"
-        android:maxLines="1"
-        android:text="프로필 이름" />
+        android:orientation="vertical">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profileIV"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/sample"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:id="@+id/profileTV"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profileIV"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="0dp"
+            android:maxLines="1"
+            android:text="프로필 이름" />
+    </RelativeLayout>
+
 
     <TextView
         android:id="@+id/bookTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/profileIV"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/linear"
         android:text="책 제목"
-        android:textStyle="bold"
         android:textColor="#ff000000"
-        android:layout_marginTop="16dp"/>
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/revtitleTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/profileIV"
+        android:layout_toRightOf="@id/linear"
         android:layout_below="@id/bookTV"
+        android:layout_alignBaseline="@id/linear"
         android:text="리뷰 제목"
+        android:maxLines="2"
         android:layout_marginTop="16dp"/>
 
 
