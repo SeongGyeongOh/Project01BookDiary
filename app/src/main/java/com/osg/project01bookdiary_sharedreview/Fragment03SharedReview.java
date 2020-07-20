@@ -27,6 +27,8 @@ public class Fragment03SharedReview extends Fragment {
     RecyclerView recyclerView;
     SharedReviewAdapter sharedReviewAdapter;
 
+    //https://github.com/Applandeo/Material-Calendar-View#dots-indicator (사용한 캘린더 깃헙 주소)
+
 
     @Nullable
     @Override

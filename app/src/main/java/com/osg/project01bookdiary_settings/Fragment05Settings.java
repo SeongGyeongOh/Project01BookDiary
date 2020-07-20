@@ -73,9 +73,6 @@ public class Fragment05Settings extends Fragment {
 
     Uri imgUrl;
 
-    boolean imgIsChanged, nameIsChanged;
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -88,12 +85,11 @@ public class Fragment05Settings extends Fragment {
             }
         }
 
-
         profileImg = view.findViewById(R.id.iv_profile);
         profileName = view.findViewById(R.id.tv_nickname);
         settingsLayout = view.findViewById(R.id.settings_layout);
 
-        loadProfileData();
+        //TODO : 한 번만 로그인을 했어도!! 시간이 지나도!! 제발!! 데이터 안날아가게 설정할 것
 
         Glide.with(getActivity()).load(G.profileUrl).into(profileImg);
         profileName.setText(G.profileName);
@@ -150,9 +146,6 @@ public class Fragment05Settings extends Fragment {
                                 }
                             });
 
-                            //TODO LIST:댓글에 나타나는 프로필 이름은 실시간 DB에 가서 바꿔야함
-//                            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-//                            DatabaseReference dbRef = firebaseDatabase.getReference();
 
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -9,4 +9,6 @@ public class G {
     public static String nickName;
     public static String profileName;
     public static String profileUrl;
+
+    public static String token;
 }

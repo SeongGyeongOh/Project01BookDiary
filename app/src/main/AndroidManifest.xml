@@ -37,9 +37,29 @@
             <!-- </intent-filter> -->
         </activity>
 
+
+        <!--푸시서비스-->
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="a802a19d22d9f8633a53e5c8965e4d62" />
+
+        <!--FCM 토큰 자동 초기화 방지-->
+<!--        <meta-data-->
+<!--            android:name="firebase_messaging_auto_init_enabled"-->
+<!--            android:value="false" />-->
+<!--        <meta-data-->
+<!--            android:name="firebase_analytics_collection_enabled"-->
+<!--            android:value="false" />-->
+
+
     </application>
 
 </manifest>

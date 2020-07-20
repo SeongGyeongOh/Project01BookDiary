@@ -42,14 +42,6 @@ public class Tab01MyReviewFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler);
         recyclerView.setAdapter(myAdapter);
 
-//        btn = view.findViewById(R.id.btn);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
-
         return view;
     }
 

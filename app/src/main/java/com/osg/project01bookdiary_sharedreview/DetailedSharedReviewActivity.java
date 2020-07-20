@@ -141,4 +141,4 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
             }
         });
     }
-} //TODO LIST: 코멘트 업데이트 & 프로필 설정값 다시 확인하기!!!! (꼭!! 내일은 끝내자 안끝나면 다음으로 넘어간다...)
+}

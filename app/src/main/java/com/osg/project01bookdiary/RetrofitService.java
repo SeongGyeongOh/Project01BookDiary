@@ -1,6 +1,7 @@
 package com.osg.project01bookdiary;
 
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+import com.osg.project01bookdiary_Calendar.PushData;
 import com.osg.project01bookdiary_sharedreview.SharedReview_item;
 
 import java.util.ArrayList;
@@ -67,5 +68,10 @@ public interface RetrofitService {
     @POST("/Project01BookDiary/uptdateProfileNameToData.php")
     Call<String> updateProfileName(@Field("ID") String ID,
                                    @Field("profileName") String profileName);
+
+    //푸시로 받을 데이터 설정
+    @FormUrlEncoded
+    @POST("/Project01BookDiary/pushData.php")
+    Call<String> uploadPushData(@Field("title") String title, @Field("message") String msg, @Field("token") String token);
 
 }

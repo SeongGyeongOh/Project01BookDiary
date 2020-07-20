@@ -7,9 +7,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.osg.project01bookdiary_Calendar.Fragment04Calendar;
 import com.osg.project01bookdiary_sharedreview.Fragment03SharedReview;
 import com.osg.project01bookdiary_settings.Fragment05Settings;
 
@@ -24,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //달력+푸시에 쓸 토큰 얻어오기
+        getToken();
 
         fragmentManager = getSupportFragmentManager();
         bottomNavigationView = findViewById(R.id.bottom_navi);
@@ -66,6 +76,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 tran.commit();
                 return true;
+            }
+        });
+    }
+
+    void getToken(){
+        FirebaseInstanceId firebaseInstanceId=FirebaseInstanceId.getInstance();
+        Task<InstanceIdResult> task=firebaseInstanceId.getInstanceId();
+        task.addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                G.token=task.getResult().getToken();
+                Log.i("TOKEN", G.token);
             }
         });
     }
