@@ -1,7 +1,11 @@
 package com.osg.project01bookdiary_Calendar;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.sip.SipSession;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,6 +51,13 @@ public class Fragment04Calendar extends Fragment {
 
     ArrayList<EventDay> events;
 
+    int y, m, d;
+
+    Calendar clickedDay;
+
+    SQLiteDatabase db;
+    String dbName;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,11 +70,11 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnDayClickListener(new OnDayClickListener() {
             @Override
             public void onDayClick(EventDay eventDay) {
-                Calendar clickedDay=eventDay.getCalendar();
+                clickedDay=eventDay.getCalendar();
 
-                int y=clickedDay.get(Calendar.YEAR);
-                int m=clickedDay.get(Calendar.MONTH);
-                int d=clickedDay.get(Calendar.DATE);
+                y=clickedDay.get(Calendar.YEAR);
+                m=clickedDay.get(Calendar.MONTH);
+                d=clickedDay.get(Calendar.DATE);
 
                 AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
                 View v = getLayoutInflater().inflate(R.layout.alertdialog_calendar, null);
@@ -74,13 +85,22 @@ public class Fragment04Calendar extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(etMemo.getText()!=null){
-                            tvNote.append(d+"일 : "+etMemo.getText().toString()+"\n");
+                            //달력에 메모한 내용을 먼저 SharedPreferences에 저장(메모한 날짜+메모 내용)
+                            SharedPreferences sharedPreferences=getActivity().getSharedPreferences("Memo", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor=sharedPreferences.edit();
+                            String memo=etMemo.getText().toString();
+                            editor.putString("memo", memo);
+                            editor.putInt("year", y);
+                            editor.putInt("month"+m, m);
+                            editor.putInt("date", d);
+                            editor.commit();
 
-                            events.add(new EventDay(clickedDay, R.drawable.ic_baseline_menu_book_24));
+//                            db=SQLiteDatabase.openOrCreateDatabase(dbName,null);
+//
+//                            db.execSQL("CREATE TABLE IF NOT EXISTS "+G.nickName+"(memo text not null, year integer, month integer, date integer)");
+//                            db.execSQL("INSERT INTO "+G.nickName+"(memo, year, month, date) VALUES('"+memo+"','"+y+"','"+m+"','"+d+"')");
+
                         }
-                        calendarView.setEvents(events);
-
-//                        Date date=new Date();
                     }
                 });
 
@@ -117,8 +137,29 @@ public class Fragment04Calendar extends Fragment {
             }
         });
 
-
+        //저장한 메모 내용을 보여주는 메소드
+        showMemo();
 
         return view;
+    }
+
+    void showMemo(){
+        SharedPreferences pref=getActivity().getSharedPreferences("Memo", Context.MODE_PRIVATE);
+        String note=pref.getString("memo", "");
+        int year= pref.getInt("year",0);
+        int month=pref.getInt("month", 0);
+        int day=pref.getInt("date", 0);
+
+        Toast.makeText(getContext(), note+year+month+day+"", Toast.LENGTH_SHORT).show();
+
+        Calendar cal=Calendar.getInstance();
+        cal.set(year, month, day);
+
+        tvNote.append("\n"+day+"일 : "+note+"\n");
+        events.add(new EventDay(cal, R.drawable.ic_baseline_menu_book_24));
+
+        calendarView.setEvents(events);
+
+
     }
 }
