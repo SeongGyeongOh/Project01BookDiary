@@ -74,7 +74,7 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
         num = datas.getInt("no");
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        commentRef = firebaseDatabase.getReference("comment"+num);
+        commentRef = firebaseDatabase.getReference("comment").child("comment"+num);
 
         recyclerView=findViewById(R.id.recycler_ds);
 
@@ -99,6 +99,8 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
         etComment.setText("");
     }
 
+
+
     public void showReview(){
         //책 정보-리뷰
         Glide.with(this).load(bookCover).into(bookCoverImg);
@@ -108,6 +110,8 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
         bookAuthorName.setText(bookAuthor);
         reviewContent.setText(review);
     }
+
+
 
     public void showComment(){
         //코멘트 보이기기

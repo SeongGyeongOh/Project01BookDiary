@@ -9,9 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.sip.SipSession;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,14 +21,22 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.DatePicker;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.builders.DatePickerBuilder;
+import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.applandeo.materialcalendarview.listeners.OnSelectDateListener;
 import com.applandeo.materialcalendarview.utils.CalendarProperties;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.osg.project01bookdiary.G;
 import com.osg.project01bookdiary.R;
 import com.osg.project01bookdiary.RetrofitHelper;
@@ -48,15 +58,16 @@ public class Fragment04Calendar extends Fragment {
     CalendarView calendarView;
     EditText etMemo;
     TextView tvNote;
-
-    ArrayList<EventDay> events;
-
+    ArrayList<EventDay> events=new ArrayList<>();
     int y, m, d;
-
     Calendar clickedDay;
+    DatabaseReference ref;
 
-    SQLiteDatabase db;
-    String dbName;
+    RecyclerView recyclerView;
+    ArrayList<MemoItem> items=new ArrayList<>();
+    RecyclerMemoAdapter adapter;
+
+    int year, month;
 
     @Nullable
     @Override
@@ -66,40 +77,39 @@ public class Fragment04Calendar extends Fragment {
         calendarView=view.findViewById(R.id.calendar);
         tvNote=view.findViewById(R.id.tv_note);
         events = new ArrayList<>();
+        recyclerView=view.findViewById(R.id.recycle);
 
+        adapter=new RecyclerMemoAdapter(getContext(), items);
+        recyclerView.setAdapter(adapter);
+
+        //달력 날짜를 클릭했을 때
         calendarView.setOnDayClickListener(new OnDayClickListener() {
             @Override
             public void onDayClick(EventDay eventDay) {
+
+                Log.i("DATE", ""+year+month);
+
                 clickedDay=eventDay.getCalendar();
 
                 y=clickedDay.get(Calendar.YEAR);
-                m=clickedDay.get(Calendar.MONTH);
+                m=clickedDay.get(Calendar.MONTH)+1;
                 d=clickedDay.get(Calendar.DATE);
 
                 AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
                 View v = getLayoutInflater().inflate(R.layout.alertdialog_calendar, null);
                 etMemo=v.findViewById(R.id.et_memo);
-                builder.setView(v);
-
-                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                builder.setView(v).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(etMemo.getText()!=null){
-                            //달력에 메모한 내용을 먼저 SharedPreferences에 저장(메모한 날짜+메모 내용)
-                            SharedPreferences sharedPreferences=getActivity().getSharedPreferences("Memo", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor=sharedPreferences.edit();
                             String memo=etMemo.getText().toString();
-                            editor.putString("memo", memo);
-                            editor.putInt("year", y);
-                            editor.putInt("month"+m, m);
-                            editor.putInt("date", d);
-                            editor.commit();
 
-//                            db=SQLiteDatabase.openOrCreateDatabase(dbName,null);
-//
-//                            db.execSQL("CREATE TABLE IF NOT EXISTS "+G.nickName+"(memo text not null, year integer, month integer, date integer)");
-//                            db.execSQL("INSERT INTO "+G.nickName+"(memo, year, month, date) VALUES('"+memo+"','"+y+"','"+m+"','"+d+"')");
+                            //달력에 메모한 내용을 먼저 Firebase에 저장(메모한 날짜+메모 내용)
+                            MemoItem memoItem=new MemoItem(y, m, d, memo);
 
+                            FirebaseDatabase db=FirebaseDatabase.getInstance();
+                            ref=db.getReference("Calendar"+G.nickName).child(""+y+m);
+                            ref.push().setValue(memoItem);
                         }
                     }
                 });
@@ -109,57 +119,85 @@ public class Fragment04Calendar extends Fragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }
                 });
-
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
 
                 //TODO: 특정 시간에 서버로 데이터가 날라가며 push 알람이 뜨도록 설정하기!!
                 //TODO: 선택한 날짜+해당 날짜의 일정을 SharedPreference에 저장해서..저장하기
-                if(System.currentTimeMillis()==eventDay.getCalendar().getTimeInMillis()){
-                    Retrofit retrofit= RetrofitHelper.getString();
-                    RetrofitService retrofitService=retrofit.create(RetrofitService.class);
-                    Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
-
-                    call.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            if(response.isSuccessful()){
-                                Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-
-                        }
-                    });
-                }
+//                Retrofit retrofit= RetrofitHelper.getString();
+//                RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+//                Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
+//
+//                call.enqueue(new Callback<String>() {
+//                    @Override
+//                    public void onResponse(Call<String> call, Response<String> response) {
+//                        if(response.isSuccessful()){
+//                            Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<String> call, Throwable t) {
+//
+//                    }
+//                });
             }
         });
 
-        //저장한 메모 내용을 보여주는 메소드
+        calendarView.setOnPreviousPageChangeListener(new OnCalendarPageChangeListener() {
+            @Override
+            public void onChange() {
+                items.clear();
+                showMemo();
+            }
+        });
+
+        calendarView.setOnForwardPageChangeListener(new OnCalendarPageChangeListener() {
+            @Override
+            public void onChange() {
+                items.clear();
+                showMemo();
+            }
+        });
+
+        items.clear();
         showMemo();
 
         return view;
     }
 
-    void showMemo(){
-        SharedPreferences pref=getActivity().getSharedPreferences("Memo", Context.MODE_PRIVATE);
-        String note=pref.getString("memo", "");
-        int year= pref.getInt("year",0);
-        int month=pref.getInt("month", 0);
-        int day=pref.getInt("date", 0);
+    public void showMemo(){
+        Calendar calendar=calendarView.getCurrentPageDate();
+        year=calendar.get(Calendar.YEAR);
+        month=calendar.get(Calendar.MONTH)+1;
 
-        Toast.makeText(getContext(), note+year+month+day+"", Toast.LENGTH_SHORT).show();
+        tvNote.setText(month+"월 독서 일정");
 
-        Calendar cal=Calendar.getInstance();
-        cal.set(year, month, day);
+//        items.clear();
 
-        tvNote.append("\n"+day+"일 : "+note+"\n");
-        events.add(new EventDay(cal, R.drawable.ic_baseline_menu_book_24));
+        FirebaseDatabase db=FirebaseDatabase.getInstance();
+        ref=db.getReference("Calendar"+G.nickName).child(""+year+month);
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                MemoItem item=snapshot.getValue(MemoItem.class);
+                items.add(item);
+                adapter.notifyDataSetChanged();
+
+                Calendar calendar=Calendar.getInstance();
+                calendar.set(item.year, item.month-1, item.date);
+                events.add(new EventDay(calendar, R.drawable.ic_baseline_menu_book_24));
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
 
         calendarView.setEvents(events);
-
-
     }
 }

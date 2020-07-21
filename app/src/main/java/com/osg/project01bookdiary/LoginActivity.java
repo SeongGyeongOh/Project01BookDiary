@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 //        String keyHash = getKeyHash(this);
 //        Log.i("TAG", keyHash);
         if(Session.getCurrentSession().checkAndImplicitOpen()){
-            if (G.profileName!=null) {
+            if (G.nickName!=null) {
                 Intent intent = new Intent(this, MainActivity.class );
                 startActivity(intent);
                 finish();
