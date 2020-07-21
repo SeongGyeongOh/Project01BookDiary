@@ -90,6 +90,7 @@ public class Fragment05Settings extends Fragment {
         settingsLayout = view.findViewById(R.id.settings_layout);
 
         //TODO : 한 번만 로그인을 했어도!! 시간이 지나도!! 제발!! 데이터 안날아가게 설정할 것
+
         Glide.with(getActivity()).load(G.profileUrl).into(profileImg);
         profileName.setText(G.profileName);
 
@@ -145,6 +146,7 @@ public class Fragment05Settings extends Fragment {
                                 }
                             });
 
+
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("Profile Name", G.profileName);
@@ -168,13 +170,13 @@ public class Fragment05Settings extends Fragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                G.profileName = null;
                 Log.i("LOGOUT", "로그아웃 성공");
                 UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
                     @Override
                     public void onCompleteLogout() {
                     }
                 });
-                G.nickName = null;
                 redirectLoginActivity();
             }
         });
