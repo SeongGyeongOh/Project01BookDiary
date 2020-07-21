@@ -144,24 +144,23 @@ public class Fragment04Calendar extends Fragment {
             }
         });
 
+        showMemo();
+
+        //TODO: 중복되는 값 없애는것 알아보기
         calendarView.setOnPreviousPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
-                items.clear();
                 showMemo();
             }
         });
+
 
         calendarView.setOnForwardPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
-                items.clear();
                 showMemo();
             }
         });
-
-        items.clear();
-        showMemo();
 
         return view;
     }
@@ -173,7 +172,8 @@ public class Fragment04Calendar extends Fragment {
 
         tvNote.setText(month+"월 독서 일정");
 
-//        items.clear();
+        items.clear();
+        adapter.notifyDataSetChanged();
 
         FirebaseDatabase db=FirebaseDatabase.getInstance();
         ref=db.getReference("Calendar"+G.nickName).child(""+year+month);
@@ -187,6 +187,7 @@ public class Fragment04Calendar extends Fragment {
                 Calendar calendar=Calendar.getInstance();
                 calendar.set(item.year, item.month-1, item.date);
                 events.add(new EventDay(calendar, R.drawable.ic_baseline_menu_book_24));
+                calendarView.setEvents(events);
             }
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
@@ -198,6 +199,6 @@ public class Fragment04Calendar extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {}
         });
 
-        calendarView.setEvents(events);
+
     }
 }
