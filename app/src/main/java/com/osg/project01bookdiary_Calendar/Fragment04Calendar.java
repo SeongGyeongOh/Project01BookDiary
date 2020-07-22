@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -86,11 +87,8 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnDayClickListener(new OnDayClickListener() {
             @Override
             public void onDayClick(EventDay eventDay) {
-
-                Log.i("DATE", ""+year+month);
-
+//                Log.i("DATE", ""+year+month);
                 clickedDay=eventDay.getCalendar();
-
                 y=clickedDay.get(Calendar.YEAR);
                 m=clickedDay.get(Calendar.MONTH)+1;
                 d=clickedDay.get(Calendar.DATE);
@@ -104,12 +102,28 @@ public class Fragment04Calendar extends Fragment {
                         if(etMemo.getText()!=null){
                             String memo=etMemo.getText().toString();
 
-                            //달력에 메모한 내용을 먼저 Firebase에 저장(메모한 날짜+메모 내용)
+                            //메모한 내용을 Firebase에 저장(메모한 날짜+메모 내용)
                             MemoItem memoItem=new MemoItem(y, m, d, memo);
 
                             FirebaseDatabase db=FirebaseDatabase.getInstance();
                             ref=db.getReference("Calendar"+G.nickName).child(""+y+m);
                             ref.push().setValue(memoItem);
+
+                            //TODO: 특정 시간에!! 서버로 데이터가 날라가며 push 알람이 뜨도록 설정하기!!
+//                            Retrofit retrofit= RetrofitHelper.getString();
+//                            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+//                            Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
+//                            call.enqueue(new Callback<String>() {
+//                                @Override
+//                                public void onResponse(Call<String> call, Response<String> response) {
+//                                    if(response.isSuccessful()){
+////                                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                                @Override
+//                                public void onFailure(Call<String> call, Throwable t) {
+//                                }
+//                            });
                         }
                     }
                 });
@@ -121,32 +135,12 @@ public class Fragment04Calendar extends Fragment {
                 });
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
-
-                //TODO: 특정 시간에 서버로 데이터가 날라가며 push 알람이 뜨도록 설정하기!!
-                //TODO: 선택한 날짜+해당 날짜의 일정을 SharedPreference에 저장해서..저장하기
-//                Retrofit retrofit= RetrofitHelper.getString();
-//                RetrofitService retrofitService=retrofit.create(RetrofitService.class);
-//                Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
-//
-//                call.enqueue(new Callback<String>() {
-//                    @Override
-//                    public void onResponse(Call<String> call, Response<String> response) {
-//                        if(response.isSuccessful()){
-//                            Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<String> call, Throwable t) {
-//
-//                    }
-//                });
             }
+
         });
 
-        showMemo();
-
         //TODO: 중복되는 값 없애는것 알아보기
+        //전 달 클릭
         calendarView.setOnPreviousPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
@@ -154,7 +148,7 @@ public class Fragment04Calendar extends Fragment {
             }
         });
 
-
+        //다음달 클릭
         calendarView.setOnForwardPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
@@ -162,8 +156,13 @@ public class Fragment04Calendar extends Fragment {
             }
         });
 
+        showMemo();
+//        adapter.notifyDataSetChanged();
+
         return view;
     }
+
+
 
     public void showMemo(){
         Calendar calendar=calendarView.getCurrentPageDate();
@@ -199,6 +198,6 @@ public class Fragment04Calendar extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {}
         });
 
-
     }
+
 }

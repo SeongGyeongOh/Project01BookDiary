@@ -61,19 +61,22 @@ public class LoginActivity extends AppCompatActivity {
 //        String keyHash = getKeyHash(this);
 //        Log.i("TAG", keyHash);
         if(Session.getCurrentSession().checkAndImplicitOpen()){
-            if (G.profileName!=null) {
+            if (G.nickName!=null) {
                 Intent intent = new Intent(this, MainActivity.class );
                 startActivity(intent);
                 finish();
             }else {
                 requestUserInfo();
             }
-
         }else {
             Session.getCurrentSession().addCallback(iSessionCallback);
+            //SharedPreference에 닉네임/프로필 이미지 Url 저장
+            SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences("Profile", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("Profile Name", G.profileName);
+            editor.putString("Profile Image", G.profileUrl);
+            editor.commit();
         }
-
-
     }
 
     private ISessionCallback iSessionCallback = new ISessionCallback() {
@@ -105,32 +108,6 @@ public class LoginActivity extends AppCompatActivity {
                 profile = account.getProfile();
                 G.profileName = profile.getNickname();
                 G.profileUrl = profile.getProfileImageUrl();
-
-                //Firebase에 profileImage 저장해보자
-//                Uri imgUri = Uri.parse(G.profileUrl);
-//                SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMddhhmmss");
-//                String profileImgName =sdf.format(new Date())+".jpg";
-//
-//                FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-//                StorageReference ref = firebaseStorage.getReference("prorileImage/"+profileImgName);
-//
-//                UploadTask task = ref.putFile(imgUri);
-//                task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        Toast.makeText(LoginActivity.this, "업로드 성공", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-
-
-                //SharedPreference에 닉네임/프로필 이미지 Url 저장
-                SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences("Profile", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("Profile Name", G.profileName);
-                editor.putString("Profile Image", G.profileUrl);
-                editor.commit();
-
-//                saveProfileData(G.profileUrl, G.profileName);
 
                 //카카로 로그인 id(G.nickName)을 이용해서 DB에 테이블 생성
                 Retrofit retrofit = RetrofitHelper.getString();

@@ -89,8 +89,6 @@ public class Fragment05Settings extends Fragment {
         profileName = view.findViewById(R.id.tv_nickname);
         settingsLayout = view.findViewById(R.id.settings_layout);
 
-        //TODO : 한 번만 로그인을 했어도!! 시간이 지나도!! 제발!! 데이터 안날아가게 설정할 것
-
         Glide.with(getActivity()).load(G.profileUrl).into(profileImg);
         profileName.setText(G.profileName);
 
@@ -116,7 +114,6 @@ public class Fragment05Settings extends Fragment {
 
                             //1. 사진을 Firebase Storage에 전송
                             imgUrl = Uri.parse(G.profileUrl);
-
                             saveProfileData();
 
                             //프로필 이미지 SharedPreferences에 저장하기
@@ -127,7 +124,9 @@ public class Fragment05Settings extends Fragment {
                             editor.commit();
                         }
 
-                        if(et.getText()!=null){
+                        if(et.getText().toString().isEmpty()){
+                            return;
+                        }else {
                             G.profileName=et.getText().toString();
                             profileName.setText(G.profileName);
 
@@ -145,16 +144,11 @@ public class Fragment05Settings extends Fragment {
 
                                 }
                             });
-
-
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("Profile Name", G.profileName);
 
                             editor.commit();
-
-                        }else{
-                            return;
                         }
                     }
                 });
@@ -170,7 +164,7 @@ public class Fragment05Settings extends Fragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                G.profileName = null;
+                G.nickName = null;
                 Log.i("LOGOUT", "로그아웃 성공");
                 UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
                     @Override
@@ -232,38 +226,38 @@ public class Fragment05Settings extends Fragment {
         StorageReference ref = firebaseStorage.getReference("profileImage/"+profileImgName);
 
         UploadTask task = ref.putFile(imgUrl);
-        task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        StorageReference imgRef = firebaseStorage.getReference();
+        imgRef.child("profileImage/"+"Image"+G.nickName+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(getContext(), "업로드 성공", Toast.LENGTH_SHORT).show();
+            public void onSuccess(Uri uri) {
+                G.profileUrl = uri.toString();
+                String uriString = G.profileUrl;
+                Toast.makeText(getContext(), G.profileUrl+"", Toast.LENGTH_SHORT).show();
 
-                StorageReference imgRef = firebaseStorage.getReference();
-                imgRef.child("profileImage/"+"Image"+G.nickName+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                //2. 전송한 사진의 Firebase 주소값을 얻어와 DB에 반영
+                Retrofit retrofit = RetrofitHelper.getString();
+                RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+                Call<String> call = retrofitService.updateProfileImage(G.nickName, uriString);
+                call.enqueue(new Callback<String>() {
                     @Override
-                    public void onSuccess(Uri uri) {
-                        G.profileUrl = uri.toString();
-                        String uriString = G.profileUrl;
-                        Toast.makeText(getContext(), G.profileUrl+"", Toast.LENGTH_SHORT).show();
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+                    }
 
-                        //2. 전송한 사진의 Firebase 주소값을 얻어와 DB에 반영
-                        Retrofit retrofit = RetrofitHelper.getString();
-                        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-                        Call<String> call = retrofitService.updateProfileImage(G.nickName, uriString);
-                        call.enqueue(new Callback<String>() {
-                            @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
-                                Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onFailure(Call<String> call, Throwable t) {
-                                Toast.makeText(getContext(), t.getMessage()+"", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Toast.makeText(getContext(), t.getMessage()+"", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
+
+//        task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                Toast.makeText(getContext(), "업로드 성공", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     void loadProfileData(){

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +32,7 @@ public class Tab01MyReviewFragment extends Fragment {
     ArrayList<Tab01myreview_item> items = new ArrayList<>();
     RecyclerAdapter myAdapter;
     RecyclerView recyclerView;
+    SwipeRefreshLayout refreshLayout;
     Button btn;
 
     @Nullable
@@ -38,9 +40,12 @@ public class Tab01MyReviewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab01_layout, container, false);
 
+        refreshLayout=view.findViewById(R.id.swipe);
+
         myAdapter = new RecyclerAdapter(items, getContext());
         recyclerView = view.findViewById(R.id.recycler);
         recyclerView.setAdapter(myAdapter);
+
 
         return view;
     }
@@ -77,6 +82,14 @@ public class Tab01MyReviewFragment extends Fragment {
             }
         });
 
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                myAdapter.notifyDataSetChanged();
+                refreshLayout.setRefreshing(false);
+            }
+        });
     }
+
 }
 

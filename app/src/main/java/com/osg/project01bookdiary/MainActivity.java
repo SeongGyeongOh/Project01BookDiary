@@ -21,6 +21,7 @@ import com.osg.project01bookdiary_sharedreview.Fragment03SharedReview;
 import com.osg.project01bookdiary_settings.Fragment05Settings;
 
 public class MainActivity extends AppCompatActivity {
+    //https://app-privacy-policy-generator.firebaseapp.com/ 개인정보처리방침 생성 링크!!
 
     FragmentManager fragmentManager;
     BottomNavigationView bottomNavigationView;

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.osg.project01bookdiary.R;
 import com.osg.project01bookdiary.RetrofitHelper;
@@ -26,6 +27,7 @@ public class Fragment03SharedReview extends Fragment {
     ArrayList<SharedReview_item> items = new ArrayList<>();
     RecyclerView recyclerView;
     SharedReviewAdapter sharedReviewAdapter;
+    SwipeRefreshLayout swipelayout;
 
     //https://github.com/Applandeo/Material-Calendar-View#dots-indicator (사용한 캘린더 깃헙 주소)
 
@@ -35,9 +37,14 @@ public class Fragment03SharedReview extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_sharedreview, container, false);
 
+        swipelayout=view.findViewById(R.id.swipelay);
+
         recyclerView = view.findViewById(R.id.sharedRecyclerView);
         sharedReviewAdapter = new SharedReviewAdapter(getContext(), items);
         recyclerView.setAdapter(sharedReviewAdapter);
+
+        items.clear();
+        sharedReviewAdapter.notifyDataSetChanged();
 
         Retrofit retrofit = RetrofitHelper.getJsonFromDB();
         RetrofitService retrofitService= retrofit.create(RetrofitService.class);
@@ -47,9 +54,6 @@ public class Fragment03SharedReview extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<SharedReview_item>> call, Response<ArrayList<SharedReview_item>> response) {
                 ArrayList<SharedReview_item> lists = response.body();
-
-                items.clear();
-                sharedReviewAdapter.notifyDataSetChanged();
 
                 for(SharedReview_item item : lists){
                     items.add(0, item);
@@ -66,4 +70,5 @@ public class Fragment03SharedReview extends Fragment {
 
         return view;
     }
+
 }
