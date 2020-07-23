@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name="com.osg.project01bookdiary_sharedreview.DetailedSharedReviewActivity" />
-        <activity android:name=".ReviseRevActivity" />
+        <activity android:name=".EditRevActivity" />
         <activity android:name=".MyDetailedReviewActivity" />
         <activity android:name=".AddRevActivity" />
         <activity android:name=".LoginActivity" />

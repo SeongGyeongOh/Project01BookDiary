@@ -5,20 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.bumptech.glide.Glide;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -30,7 +22,7 @@ import retrofit2.Retrofit;
 public class Tab01MyReviewFragment extends Fragment {
 
     ArrayList<Tab01myreview_item> items = new ArrayList<>();
-    RecyclerAdapter myAdapter;
+    RecyclerMyReviewListAdapter myAdapter;
     RecyclerView recyclerView;
     SwipeRefreshLayout refreshLayout;
     Button btn;
@@ -41,8 +33,15 @@ public class Tab01MyReviewFragment extends Fragment {
         View view = inflater.inflate(R.layout.tab01_layout, container, false);
 
         refreshLayout=view.findViewById(R.id.swipe);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                onResume();
+                refreshLayout.setRefreshing(false);
+            }
+        });
 
-        myAdapter = new RecyclerAdapter(items, getContext());
+        myAdapter = new RecyclerMyReviewListAdapter(items, getContext());
         recyclerView = view.findViewById(R.id.recycler);
         recyclerView.setAdapter(myAdapter);
 
@@ -82,13 +81,6 @@ public class Tab01MyReviewFragment extends Fragment {
             }
         });
 
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                myAdapter.notifyDataSetChanged();
-                refreshLayout.setRefreshing(false);
-            }
-        });
     }
 
 }

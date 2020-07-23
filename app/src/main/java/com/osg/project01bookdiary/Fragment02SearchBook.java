@@ -28,15 +28,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class Fragment02SearchBook extends Fragment {
+
+    TextView tvDirection;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_searchbook, container, false);
 
         androidx.appcompat.widget.SearchView searchView = view.findViewById(R.id.searchview);
-//        ImageView iv = view.findViewById(R.id.iv);
-//        TextView title = view.findViewById(R.id.tv_title);
-//        TextView author = view.findViewById(R.id.tv_author);
+        tvDirection=view.findViewById(R.id.tv_direction);
         ImageView closeButton = view.findViewById(R.id.search_close_btn);
 
 
@@ -53,6 +54,7 @@ public class Fragment02SearchBook extends Fragment {
                 Retrofit retrofit = RetrofitHelper.getJson();
                 RetrofitService service = retrofit.create(RetrofitService.class);
                 Call<VOBookItem> call = service.getJson(query);
+                tvDirection.setVisibility(View.GONE);
 
                 call.enqueue(new Callback<VOBookItem>() {
                     @Override
@@ -74,9 +76,13 @@ public class Fragment02SearchBook extends Fragment {
                 });
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
+                if(newText.isEmpty()){
+                    items.clear();
+                    adapter.notifyDataSetChanged();
+                    tvDirection.setVisibility(View.VISIBLE);
+                }
                 return false;
             }
         });
@@ -90,6 +96,7 @@ public class Fragment02SearchBook extends Fragment {
                 searchView.setQuery("", true);
                 items.clear();
                 adapter.notifyDataSetChanged();
+                tvDirection.setVisibility(View.VISIBLE);
             }
         });
 

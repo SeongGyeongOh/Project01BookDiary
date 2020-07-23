@@ -54,7 +54,7 @@ public class MyDetailedReviewActivity extends AppCompatActivity {
 
     public void clickFloat(View view) {
         // 리뷰 작성 액티비티로 넘어가서 데이터 변경하기
-        Intent intent = new Intent(this, ReviseRevActivity.class);
+        Intent intent = new Intent(this, EditRevActivity.class);
         intent.putExtra("title", title);
         intent.putExtra("author", author);
         intent.putExtra("cover", image);

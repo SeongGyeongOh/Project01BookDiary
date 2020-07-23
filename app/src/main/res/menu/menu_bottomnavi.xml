@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="My Page"
         android:id="@+id/mypage"
-        android:icon="@drawable/ic_baseline_home_24"/>
+        android:icon="@drawable/ic_baseline_home_24" />
 
     <item android:title="Search"
         android:id="@+id/search"
@@ -19,7 +19,5 @@
     <item android:title="Settings"
         android:id="@+id/settings"
         android:icon="@drawable/ic_baseline_settings_24"/>
-
-
 
 </menu>

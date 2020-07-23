@@ -5,24 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".MyDetailedReviewActivity">
+    tools:context=".MyDetailedReviewActivity"
+    android:background="#44BACAD8">
 
-    <ImageView
-        android:id="@+id/coveriv"
-        android:layout_width="140dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardiv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="4dp"
+        android:layout_centerHorizontal="true">
+    <ImageView
+        android:id="@+id/coveriv"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:layout_centerHorizontal="true"
         android:src="@drawable/sample"/>
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/titletv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="16dp"
-        android:layout_below="@id/coveriv"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/cardiv"
         android:text="제목칸"
         android:layout_centerHorizontal="true"
         android:textColor="#ff000000"
@@ -39,20 +47,30 @@
         android:text="작가"
         android:layout_centerHorizontal="true" />
 
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/authortv"
+        android:layout_marginTop="20dp"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="8dp">
     <TextView
         android:id="@+id/reviewTitletv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/authortv"
-        android:background="@drawable/bg_tv"
         android:padding="10dp"
         android:text="리뷰 제목 블라블라"
-        android:textColor="#ff000000" />
+        android:textColor="#ff000000"
+        />
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/reviewTitletv"
+        android:layout_below="@id/card1"
         android:layout_marginTop="20dp"
         app:cardElevation="20dp"
         app:cardCornerRadius="8dp">
@@ -71,21 +89,18 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="8dp"
-                android:backgroundTint="#79B4BA"
+                android:backgroundTint="#7B98AF"
                 android:onClick="clickFloat"
                 android:src="@drawable/ic_baseline_edit_24"
                 app:backgroundTint="#ffffff"
                 app:fabCustomSize="40dp" />
         </RelativeLayout>
-
-
     </androidx.cardview.widget.CardView>
 
 

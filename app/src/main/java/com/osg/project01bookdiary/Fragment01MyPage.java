@@ -30,7 +30,6 @@ public class Fragment01MyPage extends Fragment {
         adapter = new FragmentPagerAdapter( getActivity().getSupportFragmentManager());
 
         pager.setAdapter(adapter);
-
         tabLayout.setupWithViewPager(pager);
 
         return view;

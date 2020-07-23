@@ -14,5 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="메모"/>
+        android:text="메모"
+        android:textColor="#000000"/>
 </LinearLayout>

@@ -3,10 +3,13 @@ package com.osg.project01bookdiary;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -95,6 +98,9 @@ public class AddRevActivity extends AppCompatActivity {
         Intent intent = new Intent(AddRevActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+
+        InputMethodManager imm=(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etContent.getWindowToken(),0);
     }
 
 }

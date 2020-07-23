@@ -36,12 +36,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 //Tab01MyReviewFragment 아답터
-public class RecyclerAdapter extends RecyclerView.Adapter {
+public class RecyclerMyReviewListAdapter extends RecyclerView.Adapter {
 
     ArrayList<Tab01myreview_item> items;
     Context context;
 
-    public RecyclerAdapter(ArrayList<Tab01myreview_item> items, Context context) {
+    public RecyclerMyReviewListAdapter(ArrayList<Tab01myreview_item> items, Context context) {
         this.items = items;
         this.context = context;
     }
@@ -165,27 +165,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
             new AlertDialog.Builder(context).setMessage("공유 하시겠습니까?").setPositiveButton("확인", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-
-//                    Uri imgUri = Uri.parse(G.profileUrl);
-//                    SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMddhhmmss");
-//                    String profileImgName =sdf.format(new Date())+".jpg";
-//
-//                    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-//                    StorageReference ref = firebaseStorage.getReference("prorileImage/"+profileImgName);
-//
-//                    UploadTask task = ref.putFile(imgUri);
-//                    task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            Toast.makeText(context, "업로드 성공", Toast.LENGTH_SHORT).show();
-//                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                                @Override
-//                                public void onSuccess(Uri uri) {
-//                                    G.profileUrl = uri.toString();
-//                                }
-//                            });
-//                        }
-//                    });
 
                     //데이터들 얻어와서 SharedReview Table로 전송
                     String ID = G.nickName;

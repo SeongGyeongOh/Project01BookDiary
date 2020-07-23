@@ -4,25 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#44FFF2CA"
     tools:context="com.osg.project01bookdiary_sharedreview.DetailedSharedReviewActivity">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardiv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="4dp"
+        android:layout_marginLeft="60dp">
     <ImageView
         android:id="@+id/iv_dsBookCover"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
         android:adjustViewBounds="true"
         android:src="@drawable/sample"/>
+    </androidx.cardview.widget.CardView>
     <TextView
         android:id="@+id/tv_dsBookTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/iv_dsBookCover"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/cardiv"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
         android:text="책 제목"
         android:textStyle="bold"
         android:textColor="#ff000000"/>
@@ -32,14 +38,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="작가"
+        android:layout_toRightOf="@id/cardiv"
+        android:layout_marginLeft="16dp"
         android:layout_below="@id/tv_dsBookTitle"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_dsBookAuthor">
+        android:layout_height="match_parent"
+        android:layout_below="@id/cardiv"
+        android:layout_marginTop="30dp"
+        android:background="#44BACAD8"
+        android:padding="16dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -72,6 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="여기는 리뷰칸"
+                    android:textColor="#000000"
                     android:padding="8dp" />
             </androidx.cardview.widget.CardView>
 
@@ -94,9 +105,10 @@
 
                 <Button
                     android:id="@+id/btn_dsBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
                     android:text="확인"
+                    android:backgroundTint="#7B98AF"
                     android:layout_gravity="center"
                     android:onClick="clickSaveComment"/>
 

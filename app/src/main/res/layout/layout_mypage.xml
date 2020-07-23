@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:background="#ffffff"
             app:tabSelectedTextColor="#000000"
-            app:tabTextColor="#777777"/>
+            app:tabTextColor="#777777"
+            app:tabTextAppearance="@style/Tablayout"/>
     </androidx.cardview.widget.CardView>
 
 

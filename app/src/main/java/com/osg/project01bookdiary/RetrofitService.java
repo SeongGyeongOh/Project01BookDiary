@@ -22,7 +22,7 @@ public interface RetrofitService {
     Call<String> getLoginData(@Field("id") String nickName);
 
     @Headers("Authorization: KakaoAK 3893216dd99e3e1a539699708c60d665")
-    @GET("/v3/search/book.json?target=title")
+    @GET("/v3/search/book.json?target=title&size=50")
     Call<VOBookItem> getJson(@Query("query") String path);
 
     @FormUrlEncoded
@@ -74,4 +74,8 @@ public interface RetrofitService {
     @POST("/Project01BookDiary/pushData.php")
     Call<String> uploadPushData(@Field("title") String title, @Field("message") String msg, @Field("token") String token);
 
+    //공유한 리뷰 삭제
+    @FormUrlEncoded
+    @POST("/Project01BookDiary/deleteMySharedReview.php")
+    Call<String> deleteMySharedReview(@Field("no") int no);
 }

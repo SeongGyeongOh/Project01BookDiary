@@ -68,7 +68,7 @@ public class Fragment04Calendar extends Fragment {
     ArrayList<MemoItem> items=new ArrayList<>();
     RecyclerMemoAdapter adapter;
 
-    int year, month;
+    int year, month, date;
 
     @Nullable
     @Override
@@ -80,7 +80,7 @@ public class Fragment04Calendar extends Fragment {
         events = new ArrayList<>();
         recyclerView=view.findViewById(R.id.recycle);
 
-        adapter=new RecyclerMemoAdapter(getContext(), items);
+        adapter=new RecyclerMemoAdapter(getContext(), items, events);
         recyclerView.setAdapter(adapter);
 
         //달력 날짜를 클릭했을 때
@@ -106,24 +106,24 @@ public class Fragment04Calendar extends Fragment {
                             MemoItem memoItem=new MemoItem(y, m, d, memo);
 
                             FirebaseDatabase db=FirebaseDatabase.getInstance();
-                            ref=db.getReference("Calendar"+G.nickName).child(""+y+m);
-                            ref.push().setValue(memoItem);
+                            ref=db.getReference("Calendar"+G.nickName).child(""+y+m).child(""+m+d);
+                            ref.setValue(memoItem);
 
                             //TODO: 특정 시간에!! 서버로 데이터가 날라가며 push 알람이 뜨도록 설정하기!!
-//                            Retrofit retrofit= RetrofitHelper.getString();
-//                            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
-//                            Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
-//                            call.enqueue(new Callback<String>() {
-//                                @Override
-//                                public void onResponse(Call<String> call, Response<String> response) {
-//                                    if(response.isSuccessful()){
-////                                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                }
-//                                @Override
-//                                public void onFailure(Call<String> call, Throwable t) {
-//                                }
-//                            });
+                            Retrofit retrofit= RetrofitHelper.getString();
+                            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+                            Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
+                            call.enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    if(response.isSuccessful()){
+//                                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                }
+                            });
                         }
                     }
                 });
@@ -135,8 +135,8 @@ public class Fragment04Calendar extends Fragment {
                 });
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
-            }
 
+            }
         });
 
         //TODO: 중복되는 값 없애는것 알아보기
@@ -144,6 +144,7 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnPreviousPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
+                ref.removeEventListener(listener());
                 showMemo();
             }
         });
@@ -152,6 +153,7 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnForwardPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
+                ref.removeEventListener(listener());
                 showMemo();
             }
         });
@@ -162,12 +164,12 @@ public class Fragment04Calendar extends Fragment {
         return view;
     }
 
-
-
     public void showMemo(){
+
         Calendar calendar=calendarView.getCurrentPageDate();
         year=calendar.get(Calendar.YEAR);
         month=calendar.get(Calendar.MONTH)+1;
+        date=calendar.get(Calendar.DATE);
 
         tvNote.setText(month+"월 독서 일정");
 
@@ -176,28 +178,39 @@ public class Fragment04Calendar extends Fragment {
 
         FirebaseDatabase db=FirebaseDatabase.getInstance();
         ref=db.getReference("Calendar"+G.nickName).child(""+year+month);
-        ref.addChildEventListener(new ChildEventListener() {
+        ref.addChildEventListener(listener());
+
+        adapter.notifyDataSetChanged();
+    }
+
+
+    public ChildEventListener listener(){
+        ChildEventListener listener=new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 MemoItem item=snapshot.getValue(MemoItem.class);
                 items.add(item);
-                adapter.notifyDataSetChanged();
 
                 Calendar calendar=Calendar.getInstance();
                 calendar.set(item.year, item.month-1, item.date);
                 events.add(new EventDay(calendar, R.drawable.ic_baseline_menu_book_24));
+
                 calendarView.setEvents(events);
+
+                Log.i("CHILDREF", "중복값"+items.size());
             }
+
             @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
             @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
-        });
-
+        };
+        return listener;
     }
+
 
 }

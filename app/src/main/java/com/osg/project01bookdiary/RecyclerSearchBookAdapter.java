@@ -106,11 +106,7 @@ public class RecyclerSearchBookAdapter extends RecyclerView.Adapter {
                                     intent.putExtra("title", items.get(getLayoutPosition()).title);
                                     intent.putExtra("author", tvAuthor.getText().toString());
                                     context.startActivity(intent);
-                                    ((AppCompatActivity)context).finish();
-                                    break;
-
-                                case "내 도서 목록 추가":
-                                    //다이아로그를 띄우 책 선택 여부/별점 매기기
+//                                    ((AppCompatActivity)context).finish();
                                     break;
                             }
                             return true;

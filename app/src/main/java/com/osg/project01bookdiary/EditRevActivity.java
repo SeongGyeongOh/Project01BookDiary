@@ -1,11 +1,11 @@
 package com.osg.project01bookdiary;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +18,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ReviseRevActivity extends AppCompatActivity {
+public class EditRevActivity extends AppCompatActivity {
 
     ImageView ivCover;
     TextView tvTitle, tvAuthor;
@@ -29,7 +29,7 @@ public class ReviseRevActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_revise_rev);
+        setContentView(R.layout.activity_edit_rev);
 
         ivCover = findViewById(R.id.coveriv);
         tvTitle = findViewById(R.id.titletv);
@@ -58,21 +58,19 @@ public class ReviseRevActivity extends AppCompatActivity {
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
         Call<String> call = retrofitService.updateDBdate(G.nickName, etReviewTitle.getText().toString(), etReview.getText().toString(), title);
 
+        InputMethodManager imm=(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etReview.getWindowToken(),0);
+
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if(response.isSuccessful()){
-                    Toast.makeText(ReviseRevActivity.this, response.body()+"", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditRevActivity.this, response.body()+"", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-
-            }
+            public void onFailure(Call<String> call, Throwable t) { }
         });
-
         finish();
-
     }
 }

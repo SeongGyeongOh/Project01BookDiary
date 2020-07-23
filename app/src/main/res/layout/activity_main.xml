@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:menu="@menu/menu_bottomnavi"
-        android:background="@drawable/bg_bottomnavi"/>
+        android:background="@drawable/bg_bottomnavi"
+        app:labelVisibilityMode="unlabeled"/>
 
 </LinearLayout>
