@@ -68,6 +68,8 @@ public class Fragment04Calendar extends Fragment {
     ArrayList<MemoItem> items=new ArrayList<>();
     RecyclerMemoAdapter adapter;
 
+    static ChildEventListener listener;
+
     int year, month, date;
 
     @Nullable
@@ -82,6 +84,31 @@ public class Fragment04Calendar extends Fragment {
 
         adapter=new RecyclerMemoAdapter(getContext(), items, events);
         recyclerView.setAdapter(adapter);
+
+        listener=new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                MemoItem item=snapshot.getValue(MemoItem.class);
+                items.add(item);
+
+                Calendar calendar=Calendar.getInstance();
+                calendar.set(item.year, item.month-1, item.date);
+                events.add(new EventDay(calendar, R.drawable.ic_baseline_menu_book_24));
+
+                calendarView.setEvents(events);
+
+                Log.i("CHILDREF", "중복값"+items.size());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        };
 
         //달력 날짜를 클릭했을 때
         calendarView.setOnDayClickListener(new OnDayClickListener() {
@@ -125,6 +152,7 @@ public class Fragment04Calendar extends Fragment {
                                 }
                             });
                         }
+
                     }
                 });
 
@@ -144,7 +172,7 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnPreviousPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
-                ref.removeEventListener(listener());
+//                ref.removeEventListener(listener);
                 showMemo();
             }
         });
@@ -153,14 +181,13 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnForwardPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
-                ref.removeEventListener(listener());
+//                ref.removeEventListener(listener);
                 showMemo();
             }
         });
 
         showMemo();
 //        adapter.notifyDataSetChanged();
-
         return view;
     }
 
@@ -178,39 +205,12 @@ public class Fragment04Calendar extends Fragment {
 
         FirebaseDatabase db=FirebaseDatabase.getInstance();
         ref=db.getReference("Calendar"+G.nickName).child(""+year+month);
-        ref.addChildEventListener(listener());
+        ref.removeEventListener(listener);
+        ref.addChildEventListener(listener);
 
         adapter.notifyDataSetChanged();
     }
 
-
-    public ChildEventListener listener(){
-        ChildEventListener listener=new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                MemoItem item=snapshot.getValue(MemoItem.class);
-                items.add(item);
-
-                Calendar calendar=Calendar.getInstance();
-                calendar.set(item.year, item.month-1, item.date);
-                events.add(new EventDay(calendar, R.drawable.ic_baseline_menu_book_24));
-
-                calendarView.setEvents(events);
-
-                Log.i("CHILDREF", "중복값"+items.size());
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        };
-        return listener;
-    }
-
-
 }
+
+
