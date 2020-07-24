@@ -57,10 +57,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 //        String keyHash = getKeyHash(this);
 //        Log.i("TAG", keyHash);
         if(Session.getCurrentSession().checkAndImplicitOpen()){
+            //Shared에 있는 값이 널이 아니면!
             if (G.nickName!=null) {
                 Intent intent = new Intent(this, MainActivity.class );
                 startActivity(intent);
@@ -70,12 +70,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         }else {
             Session.getCurrentSession().addCallback(iSessionCallback);
-            //SharedPreference에 닉네임/프로필 이미지 Url 저장
-            SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences("Profile", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("Profile Name", G.profileName);
-            editor.putString("Profile Image", G.profileUrl);
-            editor.commit();
         }
     }
 
@@ -104,7 +98,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 UserAccount account = result.getKakaoAccount();
                 if(account==null) return;
-
                 profile = account.getProfile();
                 G.profileName = profile.getNickname();
                 G.profileUrl = profile.getProfileImageUrl();
@@ -117,19 +110,15 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         if(response.isSuccessful()){
-//                            Toast.makeText(LoginActivity.this, response.body()+"", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {}
                 });
-
             }
-
         });
     }
 
@@ -163,6 +152,21 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void saveProfile(String profileName, String profileUrl){
+        //SharedPreference에 닉네임/프로필 이미지 Url 저장
+        SharedPreferences sharedPreferences=getSharedPreferences("Profile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Profile Name", profileName);
+        editor.putString("Profile Image", profileUrl);
+        editor.commit();
+    }
+
+    private void loadProfile(){
+        SharedPreferences pref=getSharedPreferences("Profile", MODE_PRIVATE);
+        pref.getString("Profile Name", "");
+        pref.getString("Profile Image", "");
     }
 
 }

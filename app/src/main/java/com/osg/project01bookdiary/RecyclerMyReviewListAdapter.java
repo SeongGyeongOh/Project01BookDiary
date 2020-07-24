@@ -3,6 +3,7 @@ package com.osg.project01bookdiary;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -25,6 +26,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.osg.project01bookdiary_settings.Fragment05Settings;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,11 +37,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static android.content.Context.MODE_PRIVATE;
+
 //Tab01MyReviewFragment 아답터
 public class RecyclerMyReviewListAdapter extends RecyclerView.Adapter {
 
     ArrayList<Tab01myreview_item> items;
     Context context;
+
+    String imageUrl, nickName;
 
     public RecyclerMyReviewListAdapter(ArrayList<Tab01myreview_item> items, Context context) {
         this.items = items;
@@ -168,8 +174,9 @@ public class RecyclerMyReviewListAdapter extends RecyclerView.Adapter {
 
                     //데이터들 얻어와서 SharedReview Table로 전송
                     String ID = G.nickName;
-                    String profileImage = G.profileUrl;
-                    String profileName = G.profileName;
+                    loadProfileData();
+                    String profileImage = imageUrl;
+                    String profileName = nickName;
                     String bookCover = items.get(getLayoutPosition()).image;
                     String bookTitle = items.get(getLayoutPosition()).bookTitle;
                     String bookAuthor = items.get(getLayoutPosition()).bookAuthor;
@@ -197,6 +204,12 @@ public class RecyclerMyReviewListAdapter extends RecyclerView.Adapter {
             }).show();
         }
 
+    }
+
+    void loadProfileData(){
+        SharedPreferences sharedPreferences =context.getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
+        imageUrl=sharedPreferences.getString("Profile Image", null);
+        nickName=sharedPreferences.getString("Profile Name", null);
     }
 
 }

@@ -43,9 +43,14 @@ import com.osg.project01bookdiary.R;
 import com.osg.project01bookdiary.RetrofitHelper;
 import com.osg.project01bookdiary.RetrofitService;
 
+import java.sql.Time;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -68,9 +73,13 @@ public class Fragment04Calendar extends Fragment {
     ArrayList<MemoItem> items=new ArrayList<>();
     RecyclerMemoAdapter adapter;
 
+    ArrayList<Calendar> calendars=new ArrayList<>();
+
     static ChildEventListener listener;
 
-    int year, month, date;
+    int year, month, date, hour, minute, second;
+
+    int i=0;
 
     @Nullable
     @Override
@@ -83,6 +92,8 @@ public class Fragment04Calendar extends Fragment {
         recyclerView=view.findViewById(R.id.recycle);
 
         adapter=new RecyclerMemoAdapter(getContext(), items, events);
+        //TODO: 리사이클러뷰 순서 정렬하기
+
         recyclerView.setAdapter(adapter);
 
         listener=new ChildEventListener() {
@@ -94,10 +105,8 @@ public class Fragment04Calendar extends Fragment {
                 Calendar calendar=Calendar.getInstance();
                 calendar.set(item.year, item.month-1, item.date);
                 events.add(new EventDay(calendar, R.drawable.ic_baseline_menu_book_24));
-
                 calendarView.setEvents(events);
-
-                Log.i("CHILDREF", "중복값"+items.size());
+//                Log.i("CHILDREF", "중복값"+items.size());
             }
 
             @Override
@@ -114,11 +123,14 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnDayClickListener(new OnDayClickListener() {
             @Override
             public void onDayClick(EventDay eventDay) {
-//                Log.i("DATE", ""+year+month);
+                Log.i("DATE", ""+year+month);
                 clickedDay=eventDay.getCalendar();
                 y=clickedDay.get(Calendar.YEAR);
                 m=clickedDay.get(Calendar.MONTH)+1;
                 d=clickedDay.get(Calendar.DATE);
+
+                calendars.add(0,clickedDay);
+//                Log.i("CALS", ""+calendars.get(0).getTime()+"\n"+clickedDay.getTime()+"\n"+(h+10));
 
                 AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
                 View v = getLayoutInflater().inflate(R.layout.alertdialog_calendar, null);
@@ -133,26 +145,9 @@ public class Fragment04Calendar extends Fragment {
                             MemoItem memoItem=new MemoItem(y, m, d, memo);
 
                             FirebaseDatabase db=FirebaseDatabase.getInstance();
-                            ref=db.getReference("Calendar"+G.nickName).child(""+y+m).child(""+m+d);
-                            ref.setValue(memoItem);
-
-                            //TODO: 특정 시간에!! 서버로 데이터가 날라가며 push 알람이 뜨도록 설정하기!!
-                            Retrofit retrofit= RetrofitHelper.getString();
-                            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
-                            Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
-                            call.enqueue(new Callback<String>() {
-                                @Override
-                                public void onResponse(Call<String> call, Response<String> response) {
-                                    if(response.isSuccessful()){
-//                                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                @Override
-                                public void onFailure(Call<String> call, Throwable t) {
-                                }
-                            });
+                            DatabaseReference ref1=db.getReference("Calendar"+G.nickName).child(""+y+m).child(""+m+d);
+                            ref1.setValue(memoItem);
                         }
-
                     }
                 });
 
@@ -188,15 +183,13 @@ public class Fragment04Calendar extends Fragment {
 
         showMemo();
 //        adapter.notifyDataSetChanged();
+//        calendars.add(clickedDay);
+//        calendarView.setSelectedDates(calendars);
         return view;
     }
 
     public void showMemo(){
-
-        Calendar calendar=calendarView.getCurrentPageDate();
-        year=calendar.get(Calendar.YEAR);
-        month=calendar.get(Calendar.MONTH)+1;
-        date=calendar.get(Calendar.DATE);
+        getDate();
 
         tvNote.setText(month+"월 독서 일정");
 
@@ -211,6 +204,57 @@ public class Fragment04Calendar extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void pushData(){
+        //TODO: 특정 시간에!! 서버로 데이터가 날라가며 push 알람이 뜨도록 설정하기!!
+
+
+//        ArrayList<Calendar> dates=(ArrayList)calendarView.getSelectedDates();
+//
+//        Calendar now=dates.get(i);
+//        GregorianCalendar gre=new GregorianCalendar(year,month,date,11,11,0);
+//        now.getTime().getTime();
+//        Toast.makeText(getContext(), ""+now.getTime(), Toast.LENGTH_SHORT).show();
+//        Log.i("CAL", ""+now.getTime().getTime());
+//        Log.i("GRE",""+gre.getTime());
+//
+//        if(now.getTime()==gre.getTime()){
+//            Retrofit retrofit= RetrofitHelper.getString();
+//            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+//            Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
+//            call.enqueue(new Callback<String>() {
+//                @Override
+//                public void onResponse(Call<String> call, Response<String> response) {
+//                    if(response.isSuccessful()){
+//                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void onFailure(Call<String> call, Throwable t) {
+//                }
+//            });
+//        }
+//        i++;
+    }
+
+    public void getDate(){
+        Calendar calendar=calendarView.getCurrentPageDate();
+        year=calendar.get(Calendar.YEAR);
+        month=calendar.get(Calendar.MONTH)+1;
+        date=calendar.get(Calendar.DATE);
+        hour=calendar.get(Calendar.HOUR);
+        minute=calendar.get(Calendar.MINUTE);
+        second=calendar.get(Calendar.SECOND);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FirebaseDatabase db=FirebaseDatabase.getInstance();
+        ref=db.getReference("Calendar"+G.nickName).child(""+year+month);
+        ref.removeEventListener(listener);
+        adapter.notifyDataSetChanged();
+    }
 }
 
 

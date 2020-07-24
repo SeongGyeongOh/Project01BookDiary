@@ -73,6 +73,10 @@ public class Fragment05Settings extends Fragment {
 
     Uri imgUrl;
 
+    String imageUrl, nickName;
+
+    String profileUrl, profileNickname;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -89,8 +93,15 @@ public class Fragment05Settings extends Fragment {
         profileName = view.findViewById(R.id.tv_nickname);
         settingsLayout = view.findViewById(R.id.settings_layout);
 
-        Glide.with(getActivity()).load(G.profileUrl).into(profileImg);
-        profileName.setText(G.profileName);
+        loadProfileData();
+        //프로필 이미지와 이름
+        if(imageUrl==null&&nickName==null){
+            Glide.with(getActivity()).load(G.profileUrl).into(profileImg);
+            profileName.setText(G.profileName);
+        }else {
+            Glide.with(getActivity()).load(imageUrl).into(profileImg);
+            profileName.setText(nickName);
+        }
 
         //프로필 변경 버튼
         btnChangeProf = view.findViewById(R.id.btn_changeProfile);
@@ -102,41 +113,40 @@ public class Fragment05Settings extends Fragment {
                 iv = v.findViewById(R.id.iv_clicktochangeimg);
                 EditText et = v.findViewById(R.id.et_nickname);
                 setProfileImg();
-
                 builder.setView(v);
+
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(img!=null){
-                            G.profileUrl=img.toString();
+                            profileUrl=img.toString();
                             Glide.with(getContext()).load(img).into(profileImg);
-                            //imgIsChanged = true;
 
                             //1. 사진을 Firebase Storage에 전송
-                            imgUrl = Uri.parse(G.profileUrl);
+                            imgUrl = Uri.parse(img.toString());
                             saveProfileData();
 
-                            //프로필 이미지 SharedPreferences에 저장하기
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile", MODE_PRIVATE);
+                            //2. 프로필 이미지 SharedPreferences에 저장하기
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("Profile Image", G.profileUrl);
-
+                            editor.putString("Profile Image", img.toString());
                             editor.commit();
                         }
 
                         if(et.getText().toString().isEmpty()){
                             return;
                         }else {
-                            G.profileName=et.getText().toString();
+                            profileNickname=et.getText().toString();
                             profileName.setText(G.profileName);
 
+                            //디비에 이름정보 저장해야함!
                             Retrofit retrofit = RetrofitHelper.getString();
                             RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-                            Call<String> call = retrofitService.updateProfileName(G.nickName, G.profileName);
+                            Call<String> call = retrofitService.updateProfileName(G.nickName, profileNickname);
                             call.enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
-                                    Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
@@ -144,9 +154,10 @@ public class Fragment05Settings extends Fragment {
 
                                 }
                             });
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile", MODE_PRIVATE);
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("Profile Name", G.profileName);
+                            editor.putString("Profile Name", et.getText().toString());
 
                             editor.commit();
                         }
@@ -155,7 +166,6 @@ public class Fragment05Settings extends Fragment {
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
-
             }
         });
 
@@ -174,7 +184,6 @@ public class Fragment05Settings extends Fragment {
                 redirectLoginActivity();
             }
         });
-
         return view;
     }
 
@@ -230,14 +239,14 @@ public class Fragment05Settings extends Fragment {
         imgRef.child("profileImage/"+"Image"+G.nickName+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                G.profileUrl = uri.toString();
-                String uriString = G.profileUrl;
+                profileUrl = uri.toString();
+//                String uriString = G.profileUrl;
                 Toast.makeText(getContext(), G.profileUrl+"", Toast.LENGTH_SHORT).show();
 
                 //2. 전송한 사진의 Firebase 주소값을 얻어와 DB에 반영
                 Retrofit retrofit = RetrofitHelper.getString();
                 RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-                Call<String> call = retrofitService.updateProfileImage(G.nickName, uriString);
+                Call<String> call = retrofitService.updateProfileImage(G.nickName, profileUrl);
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -252,18 +261,12 @@ public class Fragment05Settings extends Fragment {
             }
         });
 
-//        task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                Toast.makeText(getContext(), "업로드 성공", Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     void loadProfileData(){
-        SharedPreferences sharedPreferences =getContext().getSharedPreferences("Profile", MODE_PRIVATE);
-        G.profileUrl = sharedPreferences.getString("Profile Image", null);
-        G.profileName = sharedPreferences.getString("Profile Name", null);
+        SharedPreferences sharedPreferences =getContext().getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
+        imageUrl=sharedPreferences.getString("Profile Image", null);
+        nickName=sharedPreferences.getString("Profile Name", null);
     }
 
 }

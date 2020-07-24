@@ -67,18 +67,22 @@
         />
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
+    <ScrollView
+        android:id="@+id/scrol"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/card1"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="20dp">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:cardElevation="20dp"
         app:cardCornerRadius="8dp">
-
         <TextView
             android:id="@+id/reviewtv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="430dp"
             android:layout_below="@id/reviewTitletv"
             android:text="리뷰 블라블라블라"
             android:padding="10dp"
@@ -86,22 +90,20 @@
             android:textColor="#ff000000"
             android:background="@drawable/bg_tv"
             />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="8dp"
-                android:backgroundTint="#7B98AF"
-                android:onClick="clickFloat"
-                android:src="@drawable/ic_baseline_edit_24"
-                app:backgroundTint="#ffffff"
-                app:fabCustomSize="40dp" />
-        </RelativeLayout>
     </androidx.cardview.widget.CardView>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
+        android:backgroundTint="#7B98AF"
+        android:onClick="clickFloat"
+        android:src="@drawable/ic_baseline_edit_24"
+        app:backgroundTint="#ffffff"
+        app:fabCustomSize="40dp" />
 
 
 </RelativeLayout>

@@ -69,7 +69,6 @@ public class Tab01MyReviewFragment extends Fragment {
 
                     for(Tab01myreview_item item: reviews){
                         items.add(0, item);
-
                         myAdapter.notifyItemInserted(0);
                     }
                 }
