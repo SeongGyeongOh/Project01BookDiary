@@ -95,11 +95,14 @@ public class Fragment05Settings extends Fragment {
 
         loadProfileData();
         //프로필 이미지와 이름
-        if(imageUrl==null&&nickName==null){
+        if(imageUrl==null){
             Glide.with(getActivity()).load(G.profileUrl).into(profileImg);
-            profileName.setText(G.profileName);
         }else {
             Glide.with(getActivity()).load(imageUrl).into(profileImg);
+        }
+        if(nickName==null){
+            profileName.setText(G.profileName);
+        }else {
             profileName.setText(nickName);
         }
 
@@ -126,18 +129,13 @@ public class Fragment05Settings extends Fragment {
                             imgUrl = Uri.parse(img.toString());
                             saveProfileData();
 
-                            //2. 프로필 이미지 SharedPreferences에 저장하기
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("Profile Image", img.toString());
-                            editor.commit();
                         }
 
                         if(et.getText().toString().isEmpty()){
                             return;
                         }else {
                             profileNickname=et.getText().toString();
-                            profileName.setText(G.profileName);
+                            profileName.setText(profileNickname);
 
                             //디비에 이름정보 저장해야함!
                             Retrofit retrofit = RetrofitHelper.getString();
@@ -241,16 +239,15 @@ public class Fragment05Settings extends Fragment {
             public void onSuccess(Uri uri) {
                 profileUrl = uri.toString();
 //                String uriString = G.profileUrl;
-                Toast.makeText(getContext(), G.profileUrl+"", Toast.LENGTH_SHORT).show();
-
-                //2. 전송한 사진의 Firebase 주소값을 얻어와 DB에 반영
+//                Toast.makeText(getContext(), G.profileUrl+"", Toast.LENGTH_SHORT).show();
+                //1. 전송한 사진의 Firebase 주소값을 얻어와 DB에 반영
                 Retrofit retrofit = RetrofitHelper.getString();
                 RetrofitService retrofitService = retrofit.create(RetrofitService.class);
                 Call<String> call = retrofitService.updateProfileImage(G.nickName, profileUrl);
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -258,6 +255,12 @@ public class Fragment05Settings extends Fragment {
                         Toast.makeText(getContext(), t.getMessage()+"", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                //2. 프로필 이미지 SharedPreferences에 저장하기
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("Profile Image", profileUrl);
+                editor.commit();
             }
         });
 

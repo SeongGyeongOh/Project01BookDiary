@@ -175,7 +175,13 @@ public class RecyclerMyReviewListAdapter extends RecyclerView.Adapter {
                     //데이터들 얻어와서 SharedReview Table로 전송
                     String ID = G.nickName;
                     loadProfileData();
-                    String profileImage = imageUrl;
+
+                    String profileImage;
+                    if(imageUrl==null){
+                        profileImage=G.profileUrl;
+                    }else{
+                        profileImage=imageUrl;
+                    }
                     String profileName = nickName;
                     String bookCover = items.get(getLayoutPosition()).image;
                     String bookTitle = items.get(getLayoutPosition()).bookTitle;

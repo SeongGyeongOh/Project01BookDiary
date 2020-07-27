@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,18 +61,19 @@ public class SharedReviewAdapter extends RecyclerView.Adapter {
         VHSecond viewHolder = (VHSecond) holder;
         SharedReview_item item = items.get(position);
 
-        Glide.with(context).load(item.profileImage).into(viewHolder.ivProfiles);
-        viewHolder.tvProfile.setText(item.profileName);
-        viewHolder.tvBookTitle.setText(item.bookTitle+"  "+item.bookAuthor);
-        viewHolder.tvReviewTitle.setText(item.reviewTitle);
+            Glide.with(context).load(item.profileImage).into(viewHolder.ivProfiles);
+            viewHolder.tvProfile.setText(item.profileName);
+            viewHolder.tvProfile.setText(item.profileName);
+            viewHolder.tvBookTitle.setText(item.bookTitle+"  "+item.bookAuthor);
+            viewHolder.tvReviewTitle.setText(item.reviewTitle);
 
-        if(!G.nickName.equals(item.ID)){
-            viewHolder.tvDeleteRev.setVisibility(View.GONE);
+            if(G.nickName.equals(item.ID)){
+                viewHolder.tvDeleteRev.setVisibility(View.VISIBLE);
+            }else{
+                viewHolder.tvDeleteRev.setVisibility(View.GONE);
+            }
         }
-
-    }
-
-    @Override
+        @Override
     public int getItemCount() {
         return items.size();
     }

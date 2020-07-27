@@ -78,18 +78,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="20dp"
-        app:cardCornerRadius="8dp">
+        app:cardCornerRadius="8dp"
+        android:background="@drawable/bg_tv">
         <TextView
             android:id="@+id/reviewtv"
             android:layout_width="match_parent"
-            android:layout_height="430dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/reviewTitletv"
-            android:text="리뷰 블라블라블라"
             android:padding="10dp"
             android:paddingBottom="10dp"
+            android:text="리뷰 블라블라블라"
             android:textColor="#ff000000"
-            android:background="@drawable/bg_tv"
-            />
+            android:minHeight="400dp"/>
     </androidx.cardview.widget.CardView>
     </ScrollView>
 
@@ -104,6 +104,5 @@
         android:src="@drawable/ic_baseline_edit_24"
         app:backgroundTint="#ffffff"
         app:fabCustomSize="40dp" />
-
 
 </RelativeLayout>

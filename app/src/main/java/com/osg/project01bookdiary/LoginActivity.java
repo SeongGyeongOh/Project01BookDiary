@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }else {
             Session.getCurrentSession().addCallback(iSessionCallback);
+
         }
     }
 
@@ -101,6 +102,8 @@ public class LoginActivity extends AppCompatActivity {
                 profile = account.getProfile();
                 G.profileName = profile.getNickname();
                 G.profileUrl = profile.getProfileImageUrl();
+
+                setProfile();
 
                 //카카로 로그인 id(G.nickName)을 이용해서 DB에 테이블 생성
                 Retrofit retrofit = RetrofitHelper.getString();
@@ -169,4 +172,58 @@ public class LoginActivity extends AppCompatActivity {
         pref.getString("Profile Image", "");
     }
 
+    private void setProfile(){
+        FirebaseStorage storage=FirebaseStorage.getInstance();
+        String profileImgName ="Image"+G.nickName+".png";
+
+        SharedPreferences sharedPreferences =getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
+        String imageUrl=sharedPreferences.getString("Profile Image", null);
+        String nickName=sharedPreferences.getString("Profile Name", null);
+        if(imageUrl==null){
+//            StorageReference reference=storage.getReference("profileImage/"+profileImgName);
+//            UploadTask task=reference.putFile(Uri.parse(G.profileUrl));
+//            task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    Toast.makeText(MainActivity.this, "성공", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+
+            Retrofit retrofit1=RetrofitHelper.getString();
+            RetrofitService service=retrofit1.create(RetrofitService.class);
+            Call<String> call1=service.updateProfileImage(G.nickName, G.profileUrl);
+            call1.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if(response.isSuccessful()){
+                        Toast.makeText(LoginActivity.this, response.body()+"", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+
+                }
+            });
+        }
+
+        if(nickName==null){
+            Retrofit retrofit=RetrofitHelper.getString();
+            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+            Call<String> call=retrofitService.updateProfileName(G.nickName, G.profileName);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if(response.isSuccessful()){
+                        Toast.makeText(LoginActivity.this, response.body()+"", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+
+                }
+            });
+        }
+    }
 }

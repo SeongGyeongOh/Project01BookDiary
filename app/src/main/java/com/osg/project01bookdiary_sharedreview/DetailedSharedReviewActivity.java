@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.osg.project01bookdiary.G;
 import com.osg.project01bookdiary.R;
 
 import java.util.ArrayList;
@@ -64,6 +66,8 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
         etComment = findViewById(R.id.et_dsComment );
 //        btnSubmit = findViewById(R.id.btn_dsBtn);
 
+
+
         Intent intent = getIntent();
         Bundle datas = intent.getExtras();
         bookCover = datas.getString("bookCover");
@@ -95,7 +99,16 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
         text = etComment.getText().toString();
         if(text.isEmpty()) return;
 
-        RecyclerCommentItem recyclerCommentItem = new RecyclerCommentItem(profileNickName, text);
+        SharedPreferences sharedPreferences =getSharedPreferences("Profile"+ G.nickName, MODE_PRIVATE);
+        String imageUrl=sharedPreferences.getString("Profile Image", null);
+        String nickName=sharedPreferences.getString("Profile Name", null);
+
+        String commentNickname;
+
+        if (nickName==null) commentNickname=G.profileName;
+        else commentNickname=nickName;
+
+        RecyclerCommentItem recyclerCommentItem = new RecyclerCommentItem(commentNickname, text);
         commentRef.push().setValue(recyclerCommentItem);
         etComment.setText("");
 

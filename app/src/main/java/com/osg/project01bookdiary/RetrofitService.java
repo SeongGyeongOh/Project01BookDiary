@@ -52,6 +52,11 @@ public interface RetrofitService {
     @GET("/Project01BookDiary/loadSharedReview.php")
     Call<ArrayList<SharedReview_item>> loadSharedData();
 
+    //내 리뷰만 모아보기
+    @FormUrlEncoded
+    @POST("/Project01BookDiary/selectMyReview.php")
+    Call<ArrayList<SharedReview_item>> showMyReview(@Field("ID") String ID);
+
     //삭제 버튼 눌러 table+Nickname의 정보 삭제
     @FormUrlEncoded
     @POST("/Project01BookDiary/deleteDataFromDB.php")
@@ -78,4 +83,6 @@ public interface RetrofitService {
     @FormUrlEncoded
     @POST("/Project01BookDiary/deleteMySharedReview.php")
     Call<String> deleteMySharedReview(@Field("no") int no);
+
+
 }

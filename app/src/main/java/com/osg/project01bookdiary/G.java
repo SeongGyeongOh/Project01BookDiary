@@ -11,4 +11,8 @@ public class G {
     public static String profileUrl;
 
     public static String token;
+
+    public static String changedProfileImg;
+    public static String changedProfileName;
+
 }

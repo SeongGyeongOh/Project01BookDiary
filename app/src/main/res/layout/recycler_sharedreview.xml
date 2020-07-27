@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#F1E8E0">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <RelativeLayout
         android:id="@+id/linear"
         android:layout_width="wrap_content"
@@ -51,8 +58,6 @@
         android:text="리뷰 제목"
         android:maxLines="2"
         android:layout_marginTop="16dp"/>
+    </RelativeLayout>
 
-
-
-
-</RelativeLayout>
+</androidx.cardview.widget.CardView>
