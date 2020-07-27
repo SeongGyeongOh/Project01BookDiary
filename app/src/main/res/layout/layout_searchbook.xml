@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_fragtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="도서 검색"
+        android:fontFamily="@font/godo"
+        android:padding="4dp"
+        android:textColor="#000000"
+        android:textSize="20sp"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        android:layout_below="@id/tv_fragtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        app:cardCornerRadius="8dp">
+        <androidx.appcompat.widget.SearchView
+            android:layout_below="@id/tv_fragtitle"
+            android:id="@+id/searchview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_direction"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/card"
+        android:text="책을 검색하세요"
+        android:gravity="center_horizontal|center_vertical"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        android:layout_below="@id/card"
+        android:background="#33C9CDD1"
+        android:padding="4dp"/>
+
+</RelativeLayout>

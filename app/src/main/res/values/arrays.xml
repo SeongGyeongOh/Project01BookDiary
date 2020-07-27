@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="datas">
+        <item>나의 기록</item>
+        <item>도서 목록 추가</item>
+    </string-array>
+</resources>

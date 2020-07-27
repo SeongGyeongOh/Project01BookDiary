@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#F1E8E0">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profileIV"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/sample"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:id="@+id/profileTV"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profileIV"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="0dp"
+            android:maxLines="1"
+            android:text="프로필 이름" />
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/bookTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/linear"
+        android:text="책 제목"
+        android:textColor="#ff000000"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/revtitleTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/linear"
+        android:layout_below="@id/bookTV"
+        android:layout_alignBaseline="@id/linear"
+        android:text="리뷰 제목"
+        android:maxLines="2"
+        android:layout_marginTop="16dp"/>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

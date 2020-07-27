@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_fragtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="독서 달력"
+        android:fontFamily="@font/godo"
+        android:padding="4dp"
+        android:textColor="#000000"
+        android:textSize="20sp"/>
+
+<!--    <CalendarView-->
+<!--        android:id="@+id/calendar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/tv_fragtitle"/>-->
+
+    <com.applandeo.materialcalendarview.CalendarView
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_below="@id/tv_fragtitle"
+        app:headerColor="@color/colorPrimary"
+        app:headerLabelColor="#ffffff"
+        app:pagesColor="#EFF2F4"
+        app:abbreviationsBarColor="#EFF2F4"
+        app:todayLabelColor="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/tv_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendar"
+        android:text="6월 독서 일정"
+        android:textColor="#000000"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        android:layout_below="@id/tv_note"/>
+
+
+</RelativeLayout>

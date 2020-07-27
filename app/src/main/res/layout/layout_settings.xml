@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#55eeeeee"
+    android:id="@+id/settings_layout">
+
+    <TextView
+        android:id="@+id/tv_fragtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="설정"
+        android:fontFamily="@font/godo"
+        android:padding="4dp"
+        android:textColor="#000000"
+        android:textSize="20sp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:src="@drawable/ic_baseline_account_circle_24" />
+
+    <TextView
+        android:id="@+id/tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/iv_profile"
+        android:layout_marginTop="8dp"
+        android:text="닉네임"/>
+
+    <TextView
+        android:id="@+id/tv_accountMan"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:text="계정정보 관리"
+        android:gravity="center"
+        android:layout_below="@id/tv_nickname"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/bg_bottomnavi"/>
+
+    <Button
+        android:id="@+id/btn_changeProfile"
+        android:layout_width="300dp"
+        android:layout_height="35dp"
+        android:text="프로필 변경"
+        android:layout_below="@id/tv_accountMan"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:background="@drawable/bg_logoutbtn"/>
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="300dp"
+        android:layout_height="35dp"
+        android:layout_below="@id/btn_changeProfile"
+        android:background="@drawable/bg_logoutbtn"
+        android:layout_centerHorizontal="true"
+        android:text="로그아웃"/>
+
+    <TextView
+        android:id="@+id/tv_linktoGP"
+        android:layout_width="300dp"
+        android:layout_height="35dp"
+        android:text="앱 별점/피드백 남기기"
+        android:layout_below="@id/btn_logout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/bg_tv"
+        android:gravity="center"
+        android:textColor="#ff000000"/>
+
+</RelativeLayout>
