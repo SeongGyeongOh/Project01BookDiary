@@ -206,7 +206,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
-
         if(nickName==null){
             Retrofit retrofit=RetrofitHelper.getString();
             RetrofitService retrofitService=retrofit.create(RetrofitService.class);

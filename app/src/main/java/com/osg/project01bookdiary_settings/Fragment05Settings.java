@@ -29,15 +29,20 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kakao.auth.authorization.AuthorizationResult;
+import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.osg.project01bookdiary.G;
 import com.osg.project01bookdiary.LoginActivity;
 import com.osg.project01bookdiary.MainActivity;
@@ -46,6 +51,7 @@ import com.osg.project01bookdiary.RetrofitHelper;
 import com.osg.project01bookdiary.RetrofitService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,13 +69,12 @@ public class Fragment05Settings extends Fragment {
 
     CircleImageView profileImg;
     TextView profileName, accountMan;
-    Button btnChangeProf, btnLogout;
+    Button btnChangeProf, btnLogout, btnLinktoGP, btnOut;
 
     RelativeLayout settingsLayout;
 
     ImageView iv;
     Uri img;
-    TextView linktoGP;
 
     Uri imgUrl;
 
@@ -128,9 +133,7 @@ public class Fragment05Settings extends Fragment {
                             //1. 사진을 Firebase Storage에 전송
                             imgUrl = Uri.parse(img.toString());
                             saveProfileData();
-
                         }
-
                         if(et.getText().toString().isEmpty()){
                             return;
                         }else {
@@ -146,11 +149,8 @@ public class Fragment05Settings extends Fragment {
                                 public void onResponse(Call<String> call, Response<String> response) {
 //                                    Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
                                 }
-
                                 @Override
-                                public void onFailure(Call<String> call, Throwable t) {
-
-                                }
+                                public void onFailure(Call<String> call, Throwable t) {}
                             });
 
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
@@ -182,16 +182,89 @@ public class Fragment05Settings extends Fragment {
                 redirectLoginActivity();
             }
         });
+
+        //구글 플레이로 이동하는 버튼
+        btnLinktoGP=view.findViewById(R.id.btn_linktoGP);
+        btnLinktoGP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.osg.project01bookdiary"));
+                startActivity(intent);
+            }
+        });
+
+        //회원탈퇴 버튼
+       btnOut=view.findViewById(R.id.btn_out);
+        btnOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage("탈퇴하면 저장한 모든 정보가 사라집니다.\n탈퇴 하시겠습니까?")
+                        .setPositiveButton("확인", (dialogInterface, i) -> {
+                            //탈퇴 코드
+                            UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
+                                @Override
+                                public void onSessionClosed(ErrorResult errorResult) { }
+                                @Override
+                                public void onSuccess(Long result) {
+                                    //MySql DB의 모든 정보 지우기
+                                    Retrofit retrofit=RetrofitHelper.getString();
+                                    RetrofitService service=retrofit.create(RetrofitService.class);
+                                    Call<String> call=service.deleteUserData(G.nickName);
+                                    call.enqueue(new Callback<String>() {
+                                        @Override
+                                        public void onResponse(Call<String> call, Response<String> response) {
+                                            Toast.makeText(getContext(), ""+response.body(), Toast.LENGTH_SHORT).show();
+
+                                        }
+                                        @Override
+                                        public void onFailure(Call<String> call, Throwable t) {}
+                                    });
+
+                                    //Firebase database 의 정보 지우기
+                                    FirebaseDatabase db=FirebaseDatabase.getInstance();
+                                    DatabaseReference ref=db.getReference().child("Calendar"+G.nickName);
+                                    ref.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            snapshot.getRef().removeValue();
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {}
+                                    });
+
+                                    db.getReference().child("comment")
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    for(DataSnapshot shots : snapshot.getChildren()){
+                                                        shots.getRef().child(G.nickName).removeValue();
+                                                    }
+                                                }
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {}
+                                            });
+
+                                    //FirebaseStorage의 정보 지우기
+                                    FirebaseStorage storage=FirebaseStorage.getInstance();
+                                    StorageReference refStore=storage.getReference().child("profileImage/"+"Image"+G.nickName+".png");
+                                    refStore.delete();
+
+                                    //Shared 정보 지우기
+                                    SharedPreferences pref=getActivity().getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
+                                    pref.edit().clear().commit();
+
+                                    redirectLoginActivity();
+                                }
+                            });
+                        }).setNegativeButton("취소", (dialogInterface, i) -> {}).show();
+            }
+        });
+
+
         return view;
-    }
-
-
-    void redirectLoginActivity(){
-        //로그아웃시 로그인 액티비티로 이동
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        startActivity(intent);
-        getActivity().finish();
-    }
+    }//onCreateView
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -199,6 +272,13 @@ public class Fragment05Settings extends Fragment {
         if(requestCode==10&&grantResults[0]==PackageManager.PERMISSION_DENIED){
             Toast.makeText(getContext(), "외부 저장소 접근이 제한됩니다", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    //로그아웃시 로그인 액티비티로 이동
+    void redirectLoginActivity(){
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     //사진 폴더로 가는 인텐트 실행
@@ -225,30 +305,25 @@ public class Fragment05Settings extends Fragment {
         }
     }
 
+    //프로필 이미지 저장하기
     public void saveProfileData(){
-        //프로필 이미지 Firebase에 저장하기
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         String profileImgName ="Image"+G.nickName+".png";
-
         StorageReference ref = firebaseStorage.getReference("profileImage/"+profileImgName);
-
         UploadTask task = ref.putFile(imgUrl);
+
         StorageReference imgRef = firebaseStorage.getReference();
         imgRef.child("profileImage/"+"Image"+G.nickName+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 profileUrl = uri.toString();
-//                String uriString = G.profileUrl;
-//                Toast.makeText(getContext(), G.profileUrl+"", Toast.LENGTH_SHORT).show();
                 //1. 전송한 사진의 Firebase 주소값을 얻어와 DB에 반영
                 Retrofit retrofit = RetrofitHelper.getString();
                 RetrofitService retrofitService = retrofit.create(RetrofitService.class);
                 Call<String> call = retrofitService.updateProfileImage(G.nickName, profileUrl);
                 call.enqueue(new Callback<String>() {
                     @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-//                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
-                    }
+                    public void onResponse(Call<String> call, Response<String> response) {}
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
@@ -263,9 +338,9 @@ public class Fragment05Settings extends Fragment {
                 editor.commit();
             }
         });
-
     }
 
+    //Shared에 저장한 정보 읽어오기
     void loadProfileData(){
         SharedPreferences sharedPreferences =getContext().getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
         imageUrl=sharedPreferences.getString("Profile Image", null);

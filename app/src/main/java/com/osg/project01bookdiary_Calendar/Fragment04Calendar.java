@@ -167,7 +167,6 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnPreviousPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
-//                ref.removeEventListener(listener);
                 showMemo();
             }
         });
@@ -176,15 +175,11 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnForwardPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
-//                ref.removeEventListener(listener);
                 showMemo();
             }
         });
 
         showMemo();
-//        adapter.notifyDataSetChanged();
-//        calendars.add(clickedDay);
-//        calendarView.setSelectedDates(calendars);
         return view;
     }
 

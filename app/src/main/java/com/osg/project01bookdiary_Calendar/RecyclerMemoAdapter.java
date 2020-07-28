@@ -66,6 +66,7 @@ public class RecyclerMemoAdapter extends RecyclerView.Adapter {
             radioButton=itemView.findViewById(R.id.radio);
             tvMemo=itemView.findViewById(R.id.tvMemo);
 
+            //달력 노트 삭제
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {

@@ -12,14 +12,21 @@
         android:fontFamily="@font/godo"
         android:padding="4dp"
         android:textColor="#000000"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
+<!--    <View-->
+<!--        android:id="@+id/viewSearch"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:layout_below="@id/tv_fragtitle"-->
+<!--        android:background="#B42870AA"-->
+<!--        android:layout_marginBottom="1dp"/>-->
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_below="@id/tv_fragtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="8dp"
         app:cardCornerRadius="8dp">
         <androidx.appcompat.widget.SearchView
             android:layout_below="@id/tv_fragtitle"

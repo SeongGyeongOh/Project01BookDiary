@@ -66,8 +66,6 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
         etComment = findViewById(R.id.et_dsComment );
 //        btnSubmit = findViewById(R.id.btn_dsBtn);
 
-
-
         Intent intent = getIntent();
         Bundle datas = intent.getExtras();
         bookCover = datas.getString("bookCover");
@@ -104,12 +102,11 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
         String nickName=sharedPreferences.getString("Profile Name", null);
 
         String commentNickname;
-
         if (nickName==null) commentNickname=G.profileName;
         else commentNickname=nickName;
 
         RecyclerCommentItem recyclerCommentItem = new RecyclerCommentItem(commentNickname, text);
-        commentRef.push().setValue(recyclerCommentItem);
+        commentRef.child(G.nickName).setValue(recyclerCommentItem);
         etComment.setText("");
 
         InputMethodManager imm=(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -140,26 +137,14 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
                 items.add(0, item);
                 adapter.notifyDataSetChanged();
             }
-
             @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {            }
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {            }
             @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {            }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {            }
         });
     }
 }
