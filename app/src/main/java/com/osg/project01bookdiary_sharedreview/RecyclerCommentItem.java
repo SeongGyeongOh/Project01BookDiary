@@ -9,6 +9,10 @@ public class RecyclerCommentItem {
         this.comment = comment;
     }
 
+    public RecyclerCommentItem(String nickName){
+        this.nickName=nickName;
+    }
+
     public RecyclerCommentItem() {
     }
 

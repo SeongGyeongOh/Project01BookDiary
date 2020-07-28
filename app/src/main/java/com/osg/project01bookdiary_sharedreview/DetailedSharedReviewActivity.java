@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.service.autofill.Dataset;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -50,6 +51,9 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
 
     String bookCover, bookTitle, profileImage, profileNickName, bookAuthor, review;
     String text;
+
+    String settingProfName;
+    String commentNickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,16 +101,15 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
         text = etComment.getText().toString();
         if(text.isEmpty()) return;
 
-        SharedPreferences sharedPreferences =getSharedPreferences("Profile"+ G.nickName, MODE_PRIVATE);
-        String imageUrl=sharedPreferences.getString("Profile Image", null);
-        String nickName=sharedPreferences.getString("Profile Name", null);
+        loadSharedProfile();
 
-        String commentNickname;
-        if (nickName==null) commentNickname=G.profileName;
-        else commentNickname=nickName;
+        if(!settingProfName.isEmpty()) commentNickname=settingProfName;
+        else commentNickname=G.loginProfileName;
 
+
+        //파이어베이스에 코멘트 업데이트
         RecyclerCommentItem recyclerCommentItem = new RecyclerCommentItem(commentNickname, text);
-        commentRef.child(G.nickName).setValue(recyclerCommentItem);
+        commentRef.child(G.nickName).push().setValue(recyclerCommentItem);
         etComment.setText("");
 
         InputMethodManager imm=(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -128,23 +131,32 @@ public class DetailedSharedReviewActivity extends AppCompatActivity {
 
 
     public void showComment(){
-        //코멘트 보이기기
-        commentRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                RecyclerCommentItem item = snapshot.getValue(RecyclerCommentItem.class);
 
-                items.add(0, item);
-                adapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {            }
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {            }
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {            }
+        //코멘트 보이기기
+        FirebaseDatabase.getInstance().getReference("comment").child("comment"+num)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        items.clear();
+                        adapter.notifyDataSetChanged();
+                        for(DataSnapshot shots:snapshot.getChildren()){
+                            for(DataSnapshot shot :shots.getChildren()){
+                                RecyclerCommentItem item=shot.getValue(RecyclerCommentItem.class);
+                                items.add(item);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
         });
+    }
+
+    void loadSharedProfile(){
+        SharedPreferences pref=getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
+        settingProfName=pref.getString("Setting Profile Name", "");
     }
 }

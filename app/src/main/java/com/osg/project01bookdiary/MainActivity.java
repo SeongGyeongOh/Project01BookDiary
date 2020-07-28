@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        Toast.makeText(this, G.loginProfileName+G.loginProfileImg+"", Toast.LENGTH_SHORT).show();
+
         //달력+푸시에 쓸 토큰 얻어오기
         getToken();
 

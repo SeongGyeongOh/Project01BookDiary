@@ -6,13 +6,13 @@ import retrofit2.http.Url;
 
 public class G {
 
+    //로그인 하며 얻어오는 정보
     public static String nickName;
-    public static String profileName;
-    public static String profileUrl;
+    public static String loginProfileName;
+    public static String loginProfileImg;
 
     public static String token;
 
-    public static String changedProfileImg;
-    public static String changedProfileName;
-
+    public static String settingProfileName;
+    public static String settingProfileImg;
 }

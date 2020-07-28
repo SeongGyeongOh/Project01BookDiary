@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,6 +7,10 @@
     android:padding="16dp"
     tools:context=".EditRevActivity"
     android:background="#44BACAD8">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardforcover"
@@ -18,8 +22,8 @@
         android:layout_marginTop="16dp">
     <ImageView
         android:id="@+id/coveriv"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
         android:adjustViewBounds="true"
         android:src="@drawable/sample"/>
     </androidx.cardview.widget.CardView>
@@ -45,7 +49,9 @@
         android:layout_marginTop="4dp"
         android:layout_below="@id/titletv"
         android:text="작가"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:maxLines="2"
+        android:ellipsize="end"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardtitle"
@@ -69,14 +75,14 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/cardtitle"
         android:layout_marginTop="20dp"
         app:cardElevation="4dp"
-        app:cardCornerRadius="8dp">
+        app:cardCornerRadius="8dp"
+        android:layout_below="@id/cardtitle">
         <EditText
             android:id="@+id/reviewet"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="400dp"
             android:layout_below="@id/authortv"
             android:text="리뷰 블라블라블라"
             android:textSize="14sp"
@@ -84,24 +90,20 @@
             android:paddingBottom="10dp"
             android:gravity="top"
             android:textColor="#ff000000"
-            android:background="@drawable/bg_tv"
-            />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="8dp"
-                android:backgroundTint="#7B98AF"
-                android:onClick="clickRev"
-                android:src="@drawable/ic_baseline_done_24"
-                app:backgroundTint="#ffffff"
-                app:fabCustomSize="40dp" />
-        </RelativeLayout>
+            android:background="@drawable/bg_tv" />
     </androidx.cardview.widget.CardView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
+        android:backgroundTint="#7B98AF"
+        android:onClick="clickRev"
+        android:src="@drawable/ic_baseline_done_24"
+        app:backgroundTint="#ffffff"
+        app:fabCustomSize="40dp" />
+    </RelativeLayout>
 
-</RelativeLayout>
+</ScrollView>
