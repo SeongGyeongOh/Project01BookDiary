@@ -143,6 +143,22 @@ public class Fragment04Calendar extends Fragment {
                             FirebaseDatabase db=FirebaseDatabase.getInstance();
                             DatabaseReference ref1=db.getReference("Calendar"+G.nickName).child(""+y+m).child(""+m+d);
                             ref1.setValue(memoItem);
+
+                            //푸스
+                            Retrofit retrofit= RetrofitHelper.getString();
+                            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+                            Call<String> call=retrofitService.uploadPushData(""+m+"월 "+d+"일의 독서 목표", etMemo.getText().toString(), G.token);
+                            call.enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    if(response.isSuccessful()){
+                                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                }
+                            });
                         }
                     }
                 });
@@ -219,7 +235,7 @@ public class Fragment04Calendar extends Fragment {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     if(response.isSuccessful()){
-                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override

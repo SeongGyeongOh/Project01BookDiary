@@ -64,6 +64,9 @@ public class AddRevActivity extends AppCompatActivity {
     }
 
     public void clickBack(View view) {
+        Intent intent=new Intent(AddRevActivity.this, MainActivity.class);
+
+        startActivity(intent);
         finish();
     }
 
