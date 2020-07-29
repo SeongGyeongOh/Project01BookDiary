@@ -68,6 +68,7 @@ public class Fragment04Calendar extends Fragment {
     int y, m, d;
     Calendar clickedDay;
     DatabaseReference ref;
+    View view;
 
     RecyclerView recyclerView;
     ArrayList<MemoItem> items=new ArrayList<>();
@@ -92,7 +93,6 @@ public class Fragment04Calendar extends Fragment {
         recyclerView=view.findViewById(R.id.recycle);
 
         adapter=new RecyclerMemoAdapter(getContext(), items, events);
-        //TODO: 리사이클러뷰 순서 정렬하기
 
         recyclerView.setAdapter(adapter);
 
@@ -106,7 +106,6 @@ public class Fragment04Calendar extends Fragment {
                 calendar.set(item.year, item.month-1, item.date);
                 events.add(new EventDay(calendar, R.drawable.ic_baseline_menu_book_24));
                 calendarView.setEvents(events);
-//                Log.i("CHILDREF", "중복값"+items.size());
             }
 
             @Override
@@ -130,7 +129,7 @@ public class Fragment04Calendar extends Fragment {
                 d=clickedDay.get(Calendar.DATE);
 
                 calendars.add(0,clickedDay);
-//                Log.i("CALS", ""+calendars.get(0).getTime()+"\n"+clickedDay.getTime()+"\n"+(h+10));
+
 
                 AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
                 View v = getLayoutInflater().inflate(R.layout.alertdialog_calendar, null);
@@ -143,7 +142,6 @@ public class Fragment04Calendar extends Fragment {
 
                             //메모한 내용을 Firebase에 저장(메모한 날짜+메모 내용)
                             MemoItem memoItem=new MemoItem(y, m, d, memo);
-
                             FirebaseDatabase db=FirebaseDatabase.getInstance();
                             DatabaseReference ref1=db.getReference("Calendar"+G.nickName).child(""+y+m).child(""+m+d);
                             ref1.setValue(memoItem);
@@ -162,7 +160,6 @@ public class Fragment04Calendar extends Fragment {
             }
         });
 
-        //TODO: 중복되는 값 없애는것 알아보기
         //전 달 클릭
         calendarView.setOnPreviousPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
