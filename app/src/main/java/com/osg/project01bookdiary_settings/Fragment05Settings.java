@@ -156,7 +156,6 @@ public class Fragment05Settings extends Fragment {
                             call.enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
-//                                    Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
                                 }
                                 @Override
                                 public void onFailure(Call<String> call, Throwable t) {}
@@ -246,7 +245,6 @@ public class Fragment05Settings extends Fragment {
                                     call.enqueue(new Callback<String>() {
                                         @Override
                                         public void onResponse(Call<String> call, Response<String> response) {
-                                            Toast.makeText(getContext(), ""+response.body(), Toast.LENGTH_SHORT).show();
 
                                         }
                                         @Override
@@ -285,6 +283,8 @@ public class Fragment05Settings extends Fragment {
                                     //Shared 정보 지우기
                                     SharedPreferences pref=getActivity().getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
                                     pref.edit().clear().commit();
+
+                                    Toast.makeText(getContext(), "탈퇴했습니다", Toast.LENGTH_SHORT).show();
 
                                     redirectLoginActivity();
                                 }

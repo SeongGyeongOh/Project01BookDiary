@@ -68,7 +68,6 @@ public class Fragment04Calendar extends Fragment {
     int y, m, d;
     Calendar clickedDay;
     DatabaseReference ref;
-    View view;
 
     RecyclerView recyclerView;
     ArrayList<MemoItem> items=new ArrayList<>();
@@ -130,14 +129,13 @@ public class Fragment04Calendar extends Fragment {
 
                 calendars.add(0,clickedDay);
 
-
                 AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
                 View v = getLayoutInflater().inflate(R.layout.alertdialog_calendar, null);
                 etMemo=v.findViewById(R.id.et_memo);
                 builder.setView(v).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(etMemo.getText()!=null){
+                        if(!etMemo.getText().toString().isEmpty()){
                             String memo=etMemo.getText().toString();
 
                             //메모한 내용을 Firebase에 저장(메모한 날짜+메모 내용)
@@ -160,6 +158,8 @@ public class Fragment04Calendar extends Fragment {
             }
         });
 
+        calendarView.setSelectedDates(calendars);
+
         //전 달 클릭
         calendarView.setOnPreviousPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
@@ -175,6 +175,7 @@ public class Fragment04Calendar extends Fragment {
                 showMemo();
             }
         });
+
 
         showMemo();
         return view;
@@ -196,36 +197,57 @@ public class Fragment04Calendar extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void push(){
+    }
+
     public void pushData(){
         //TODO: 특정 시간에!! 서버로 데이터가 날라가며 push 알람이 뜨도록 설정하기!!
+        ArrayList<Calendar> dates=(ArrayList)calendarView.getSelectedDates();
 
+        Calendar now=dates.get(i);
+        GregorianCalendar gre=new GregorianCalendar(year,month,date,11,11,0);
+        now.getTime().getTime();
+        Toast.makeText(getContext(), ""+now.getTime(), Toast.LENGTH_SHORT).show();
+        Log.i("CAL", ""+now.getTime().getTime());
+        Log.i("GRE",""+gre.getTime());
 
-//        ArrayList<Calendar> dates=(ArrayList)calendarView.getSelectedDates();
+        if(now.getTime()==gre.getTime()){
+            Retrofit retrofit= RetrofitHelper.getString();
+            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+            Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if(response.isSuccessful()){
+                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                }
+            });
+        }
+        i++;
+
+//        if(System.currentTimeMillis()==eventDay.getCalendar().getTimeInMillis()){
+//        Retrofit retrofit= RetrofitHelper.getString();
+//        RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+//        Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
 //
-//        Calendar now=dates.get(i);
-//        GregorianCalendar gre=new GregorianCalendar(year,month,date,11,11,0);
-//        now.getTime().getTime();
-//        Toast.makeText(getContext(), ""+now.getTime(), Toast.LENGTH_SHORT).show();
-//        Log.i("CAL", ""+now.getTime().getTime());
-//        Log.i("GRE",""+gre.getTime());
+//        call.enqueue(new Callback<String>() {
+//            @Override
+//            public void onResponse(Call<String> call, Response<String> response) {
+//                if(response.isSuccessful()){
+//                    Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+//                }
+//            }
 //
-//        if(now.getTime()==gre.getTime()){
-//            Retrofit retrofit= RetrofitHelper.getString();
-//            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
-//            Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
-//            call.enqueue(new Callback<String>() {
-//                @Override
-//                public void onResponse(Call<String> call, Response<String> response) {
-//                    if(response.isSuccessful()){
-//                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//                @Override
-//                public void onFailure(Call<String> call, Throwable t) {
-//                }
-//            });
+//            @Override
+//            public void onFailure(Call<String> call, Throwable t) {
+//
+//            }
+//        });
 //        }
-//        i++;
     }
 
     public void getDate(){

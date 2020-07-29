@@ -53,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
 
     Profile profile;
 
+//    String keyHash = getKeyHash(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +90,9 @@ public class LoginActivity extends AppCompatActivity {
     void requestUserInfo(){
         UserManagement.getInstance().me(new MeV2ResponseCallback() {
             @Override
-            public void onSessionClosed(ErrorResult errorResult) {         }
+            public void onSessionClosed(ErrorResult errorResult) {
+
+            }
             @Override
             public void onSuccess(MeV2Response result) {
                 long id = result.getId();
