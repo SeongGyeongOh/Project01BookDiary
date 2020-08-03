@@ -47,7 +47,9 @@
         android:layout_toRightOf="@id/cardiv"
         android:layout_marginLeft="16dp"
         android:layout_below="@id/tv_dsBookTitle"
-        android:layout_marginTop="4dp"/>
+        android:layout_marginTop="4dp"
+        android:maxLines="2"
+        android:ellipsize="end"/>
     </RelativeLayout>
 
     <ScrollView

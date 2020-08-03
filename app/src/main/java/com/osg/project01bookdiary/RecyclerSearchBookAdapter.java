@@ -106,7 +106,7 @@ public class RecyclerSearchBookAdapter extends RecyclerView.Adapter {
                                     intent.putExtra("title", items.get(getLayoutPosition()).title);
                                     intent.putExtra("author", tvAuthor.getText().toString());
                                     context.startActivity(intent);
-//                                    ((AppCompatActivity)context).finish();
+                                    ((AppCompatActivity)context).finish();
                                     break;
                             }
                             return true;

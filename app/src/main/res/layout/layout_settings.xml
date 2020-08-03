@@ -62,15 +62,24 @@
         android:layout_centerHorizontal="true"
         android:text="로그아웃"/>
 
-    <TextView
-        android:id="@+id/tv_linktoGP"
+    <Button
+        android:id="@+id/btn_out"
+        android:layout_width="300dp"
+        android:layout_height="35dp"
+        android:layout_below="@id/btn_logout"
+        android:background="@drawable/bg_logoutbtn"
+        android:layout_centerHorizontal="true"
+        android:text="회원탈퇴"/>
+
+    <Button
+        android:id="@+id/btn_linktoGP"
         android:layout_width="300dp"
         android:layout_height="35dp"
         android:text="앱 별점/피드백 남기기"
-        android:layout_below="@id/btn_logout"
+        android:layout_below="@id/btn_out"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:background="@drawable/bg_tv"
+        android:background="@drawable/bg_logoutbtn"
         android:gravity="center"
         android:textColor="#ff000000"/>
 

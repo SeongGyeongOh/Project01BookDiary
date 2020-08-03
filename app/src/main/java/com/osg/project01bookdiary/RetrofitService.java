@@ -62,7 +62,7 @@ public interface RetrofitService {
     @POST("/Project01BookDiary/deleteDataFromDB.php")
     Call<String> deleteDataFromDB(@Field("tableName") String tableName, @Field("no") int no);
 
-    //설정에서 프로필 이미지 변경 시 해당 내용 반영
+      //설정에서 프로필 이미지 변경 시 해당 내용 반영
     @FormUrlEncoded
     @POST("/Project01BookDiary/updateProfileImageTest.php")
     Call<String> updateProfileImage(@Field("ID") String ID,
@@ -83,6 +83,11 @@ public interface RetrofitService {
     @FormUrlEncoded
     @POST("/Project01BookDiary/deleteMySharedReview.php")
     Call<String> deleteMySharedReview(@Field("no") int no);
+
+    //회원탈퇴 코드 처리
+    @FormUrlEncoded
+    @POST("/Project01BookDiary/deleteUserData.php")
+    Call<String> deleteUserData(@Field("ID") String nickName);
 
 
 }

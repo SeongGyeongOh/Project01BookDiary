@@ -102,7 +102,6 @@ public class Fragment03SharedReview extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<SharedReview_item>> call, Response<ArrayList<SharedReview_item>> response) {
                 ArrayList<SharedReview_item> lists = response.body();
-
                 for(SharedReview_item item : lists){
                     items.add(0, item);
                     sharedReviewAdapter.notifyItemInserted(0);

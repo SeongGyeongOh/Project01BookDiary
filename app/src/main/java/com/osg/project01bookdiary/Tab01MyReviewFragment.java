@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +29,9 @@ public class Tab01MyReviewFragment extends Fragment {
     SwipeRefreshLayout refreshLayout;
     Button btn;
 
+    ImageView ivBook;
+    TextView tvGuide;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,6 +50,8 @@ public class Tab01MyReviewFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler);
         recyclerView.setAdapter(myAdapter);
 
+        ivBook=view.findViewById(R.id.ivBook);
+        tvGuide=view.findViewById(R.id.tvGuide);
 
         return view;
     }
@@ -70,6 +77,11 @@ public class Tab01MyReviewFragment extends Fragment {
                     for(Tab01myreview_item item: reviews){
                         items.add(0, item);
                         myAdapter.notifyItemInserted(0);
+
+                        if(!items.isEmpty()){
+                            tvGuide.setVisibility(View.GONE);
+                            ivBook.setVisibility(View.GONE);
+                        }
                     }
                 }
             }

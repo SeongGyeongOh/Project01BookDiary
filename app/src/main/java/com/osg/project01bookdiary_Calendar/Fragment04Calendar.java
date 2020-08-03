@@ -92,7 +92,6 @@ public class Fragment04Calendar extends Fragment {
         recyclerView=view.findViewById(R.id.recycle);
 
         adapter=new RecyclerMemoAdapter(getContext(), items, events);
-        //TODO: 리사이클러뷰 순서 정렬하기
 
         recyclerView.setAdapter(adapter);
 
@@ -106,7 +105,6 @@ public class Fragment04Calendar extends Fragment {
                 calendar.set(item.year, item.month-1, item.date);
                 events.add(new EventDay(calendar, R.drawable.ic_baseline_menu_book_24));
                 calendarView.setEvents(events);
-//                Log.i("CHILDREF", "중복값"+items.size());
             }
 
             @Override
@@ -130,7 +128,6 @@ public class Fragment04Calendar extends Fragment {
                 d=clickedDay.get(Calendar.DATE);
 
                 calendars.add(0,clickedDay);
-//                Log.i("CALS", ""+calendars.get(0).getTime()+"\n"+clickedDay.getTime()+"\n"+(h+10));
 
                 AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
                 View v = getLayoutInflater().inflate(R.layout.alertdialog_calendar, null);
@@ -138,15 +135,30 @@ public class Fragment04Calendar extends Fragment {
                 builder.setView(v).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(etMemo.getText()!=null){
+                        if(!etMemo.getText().toString().isEmpty()){
                             String memo=etMemo.getText().toString();
 
                             //메모한 내용을 Firebase에 저장(메모한 날짜+메모 내용)
                             MemoItem memoItem=new MemoItem(y, m, d, memo);
-
                             FirebaseDatabase db=FirebaseDatabase.getInstance();
                             DatabaseReference ref1=db.getReference("Calendar"+G.nickName).child(""+y+m).child(""+m+d);
                             ref1.setValue(memoItem);
+
+                            //푸스
+                            Retrofit retrofit= RetrofitHelper.getString();
+                            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+                            Call<String> call=retrofitService.uploadPushData(""+m+"월 "+d+"일의 독서 목표", etMemo.getText().toString(), G.token);
+                            call.enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    if(response.isSuccessful()){
+                                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                }
+                            });
                         }
                     }
                 });
@@ -162,12 +174,12 @@ public class Fragment04Calendar extends Fragment {
             }
         });
 
-        //TODO: 중복되는 값 없애는것 알아보기
+        calendarView.setSelectedDates(calendars);
+
         //전 달 클릭
         calendarView.setOnPreviousPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
-//                ref.removeEventListener(listener);
                 showMemo();
             }
         });
@@ -176,15 +188,12 @@ public class Fragment04Calendar extends Fragment {
         calendarView.setOnForwardPageChangeListener(new OnCalendarPageChangeListener() {
             @Override
             public void onChange() {
-//                ref.removeEventListener(listener);
                 showMemo();
             }
         });
 
+
         showMemo();
-//        adapter.notifyDataSetChanged();
-//        calendars.add(clickedDay);
-//        calendarView.setSelectedDates(calendars);
         return view;
     }
 
@@ -204,36 +213,57 @@ public class Fragment04Calendar extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void push(){
+    }
+
     public void pushData(){
         //TODO: 특정 시간에!! 서버로 데이터가 날라가며 push 알람이 뜨도록 설정하기!!
+        ArrayList<Calendar> dates=(ArrayList)calendarView.getSelectedDates();
 
+        Calendar now=dates.get(i);
+        GregorianCalendar gre=new GregorianCalendar(year,month,date,11,11,0);
+        now.getTime().getTime();
+        Toast.makeText(getContext(), ""+now.getTime(), Toast.LENGTH_SHORT).show();
+        Log.i("CAL", ""+now.getTime().getTime());
+        Log.i("GRE",""+gre.getTime());
 
-//        ArrayList<Calendar> dates=(ArrayList)calendarView.getSelectedDates();
-//
-//        Calendar now=dates.get(i);
-//        GregorianCalendar gre=new GregorianCalendar(year,month,date,11,11,0);
-//        now.getTime().getTime();
-//        Toast.makeText(getContext(), ""+now.getTime(), Toast.LENGTH_SHORT).show();
-//        Log.i("CAL", ""+now.getTime().getTime());
-//        Log.i("GRE",""+gre.getTime());
-//
-//        if(now.getTime()==gre.getTime()){
-//            Retrofit retrofit= RetrofitHelper.getString();
-//            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
-//            Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
-//            call.enqueue(new Callback<String>() {
-//                @Override
-//                public void onResponse(Call<String> call, Response<String> response) {
-//                    if(response.isSuccessful()){
+        if(now.getTime()==gre.getTime()){
+            Retrofit retrofit= RetrofitHelper.getString();
+            RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+            Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if(response.isSuccessful()){
 //                        Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
-//                    }
+                    }
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                }
+            });
+        }
+        i++;
+
+//        if(System.currentTimeMillis()==eventDay.getCalendar().getTimeInMillis()){
+//        Retrofit retrofit= RetrofitHelper.getString();
+//        RetrofitService retrofitService=retrofit.create(RetrofitService.class);
+//        Call<String> call=retrofitService.uploadPushData(""+d+"의 독서 목표", etMemo.getText().toString(), G.token);
+//
+//        call.enqueue(new Callback<String>() {
+//            @Override
+//            public void onResponse(Call<String> call, Response<String> response) {
+//                if(response.isSuccessful()){
+//                    Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_SHORT).show();
 //                }
-//                @Override
-//                public void onFailure(Call<String> call, Throwable t) {
-//                }
-//            });
+//            }
+//
+//            @Override
+//            public void onFailure(Call<String> call, Throwable t) {
+//
+//            }
+//        });
 //        }
-//        i++;
     }
 
     public void getDate(){

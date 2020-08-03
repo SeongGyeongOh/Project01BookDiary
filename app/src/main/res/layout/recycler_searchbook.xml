@@ -41,7 +41,9 @@
             android:textColor="#000000"
             android:textSize="12sp"
             android:layout_toRightOf="@id/ivTitle"
-            android:layout_margin="16dp"/>
+            android:layout_margin="16dp"
+            android:maxLines="2"
+            android:ellipsize="end"/>
 
             <ImageButton
                 android:id="@+id/img_btn"

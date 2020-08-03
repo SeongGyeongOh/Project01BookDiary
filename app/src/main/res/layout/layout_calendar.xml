@@ -14,28 +14,32 @@
         android:textColor="#000000"
         android:textSize="20sp"/>
 
-<!--    <CalendarView-->
-<!--        android:id="@+id/calendar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/tv_fragtitle"/>-->
 
     <com.applandeo.materialcalendarview.CalendarView
         android:id="@+id/calendar"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_below="@id/tv_fragtitle"
-        app:headerColor="@color/colorPrimary"
-        app:headerLabelColor="#ffffff"
-        app:pagesColor="#EFF2F4"
+        app:headerColor="#124F81"
+        app:headerLabelColor="#FFFFFF"
+        app:pagesColor="#FFFFFF"
         app:abbreviationsBarColor="#EFF2F4"
-        app:todayLabelColor="@color/colorPrimary" />
+        app:todayLabelColor="#E67612"
+        app:daysLabelsColor="#000000" />
+
+    <View
+        android:id="@+id/viewv"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@id/calendar"
+        android:background="#444444"/>
 
     <TextView
         android:id="@+id/tv_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/calendar"
+        android:layout_marginTop="8dp"
+        android:layout_below="@id/viewv"
         android:text="6월 독서 일정"
         android:textColor="#000000"/>
 

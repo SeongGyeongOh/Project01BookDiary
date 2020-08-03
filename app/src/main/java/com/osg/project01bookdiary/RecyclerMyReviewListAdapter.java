@@ -176,14 +176,21 @@ public class RecyclerMyReviewListAdapter extends RecyclerView.Adapter {
                     String ID = G.nickName;
                     loadProfileData();
 
-                    String profileImage;
-                    if(imageUrl==null){
-                        profileImage=G.profileUrl;
+                    String profileImage=null;
+                    String profileName;
+                    String bookCover;
+                    if(imageUrl!=null) profileImage=imageUrl;
+                    else if(imageUrl==null&&G.loginProfileImg!=null) profileImage=G.loginProfileImg;
+                    else if(imageUrl==null&&G.loginProfileImg==null) profileImage="https://firebasestorage.googleapis.com/v0/b/fir-cloudstore-8c242.appspot.com/o/icon-playstore.png?alt=media&token=a2a55f25-45de-4682-9f6a-ae7a307d30d9";
+
+                    if(nickName==null) profileName=G.loginProfileName;
+                    else profileName=nickName;
+
+                    if(items.get(getLayoutPosition()).image.isEmpty()){
+                        bookCover="https://firebasestorage.googleapis.com/v0/b/fir-cloudstore-8c242.appspot.com/o/noimage.png?alt=media&token=74cfc1c7-189c-461b-8f9d-fe35e64521ad";
                     }else{
-                        profileImage=imageUrl;
+                        bookCover=items.get(getLayoutPosition()).image;
                     }
-                    String profileName = nickName;
-                    String bookCover = items.get(getLayoutPosition()).image;
                     String bookTitle = items.get(getLayoutPosition()).bookTitle;
                     String bookAuthor = items.get(getLayoutPosition()).bookAuthor;
                     String reviewTitle = items.get(getLayoutPosition()).reviewTitle;
@@ -214,8 +221,8 @@ public class RecyclerMyReviewListAdapter extends RecyclerView.Adapter {
 
     void loadProfileData(){
         SharedPreferences sharedPreferences =context.getSharedPreferences("Profile"+G.nickName, MODE_PRIVATE);
-        imageUrl=sharedPreferences.getString("Profile Image", null);
-        nickName=sharedPreferences.getString("Profile Name", null);
+        imageUrl=sharedPreferences.getString("Setting Profile Image", null);
+        nickName=sharedPreferences.getString("Setting Profile Name", null);
     }
 
 }

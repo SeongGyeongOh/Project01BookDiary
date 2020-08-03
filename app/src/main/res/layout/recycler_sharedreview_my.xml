@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp"
+    app:cardElevation="2dp"
     android:layout_marginBottom="8dp"
     android:layout_marginRight="8dp"
     android:layout_marginLeft="8dp">
@@ -12,8 +12,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1193571B"
-        android:padding="4dp">
+        android:background="#33C9CDD1"
+        android:paddingRight="4dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp">
     <RelativeLayout
         android:id="@+id/linear"
         android:layout_width="wrap_content"
@@ -35,6 +37,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="0dp"
             android:maxLines="1"
+            android:ellipsize="end"
             android:text="프로필 이름"
             android:textColor="#000000"/>
     </RelativeLayout>
